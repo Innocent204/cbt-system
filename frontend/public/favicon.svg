@@ -1,0 +1,31 @@
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="gradient-primary" x1="15" y1="15" x2="85" y2="75" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#6366F1" />
+            <stop offset="1" stop-color="#3B82F6" />
+        </linearGradient>
+        <linearGradient id="gradient-secondary" x1="35" y1="30" x2="65" y2="55" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#818CF8" />
+            <stop offset="1" stop-color="#60A5FA" />
+        </linearGradient>
+    </defs>
+    <!-- Background Glow -->
+    <circle cx="50" cy="50" r="45" fill="#6366F1" fill-opacity="0.1" />
+    
+    <!-- Abstract 'A' / Knowledge Structure -->
+    <path
+        d="M50 15L85 75H15L50 15Z"
+        stroke="url(#gradient-primary)"
+        stroke-width="8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    />
+    <path
+        d="M35 55L50 30L65 55"
+        stroke="url(#gradient-secondary)"
+        stroke-width="6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    />
+    <circle cx="50" cy="55" r="4" fill="white" />
+</svg>

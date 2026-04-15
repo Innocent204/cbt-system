@@ -1,0 +1,6 @@
+question_type,difficulty,text,marks,options,correct_answer,course_id,exam_id,bank_id
+mcq,easy,What is the time complexity of binary search?,2,O(log n) | O(n) | O(n^2) | O(1),O(log n),,
+mcq,medium,Which data structure uses LIFO principle?,2,Stack | Queue | Array | Linked List,Stack,,
+true_false,easy,Arrays allow dynamic resizing.,1,True | False,False,,
+mcq,hard,What is the height of a balanced binary tree with n nodes?,3,log n | n | n^2 | 2^n,log n,,
+short_answer,medium,Explain the difference between stack and queue.,3,,,,
