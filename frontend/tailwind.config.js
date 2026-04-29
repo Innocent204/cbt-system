@@ -26,19 +26,26 @@ export default {
           950: '#082f49',
         },
         dark: {
-          primary: '#020617',      // slate-950 (deeper)
-          secondary: '#0f172a',    // slate-900
-          tertiary: '#1e293b',     // slate-800
-          surface: '#0f172a',
-          surfaceHover: '#1e293b',
+          primary: '#09090b',      // Zinc-950 (Deepest Black)
+          secondary: '#18181b',    // Zinc-900 (Sidebar/Surface)
+          tertiary: '#27272a',     // Zinc-800 (Borders/Cards)
+          surface: '#18181b',
+          surfaceHover: '#27272a',
+          accent: {
+            cyan: '#06b6d4',       // Cyan-500
+            emerald: '#10b981',    // Emerald-500
+            indigo: '#6366f1',     // Indigo-500
+            amber: '#f59e0b',      // Amber-500
+            rose: '#f43f5e',       // Rose-500
+          },
           border: {
-            primary: '#1e293b',    // slate-800
-            secondary: '#334155',  // slate-700
+            primary: '#27272a',    // Zinc-800
+            secondary: '#3f3f46',  // Zinc-700
           },
           text: {
-            primary: '#f8fafc',
-            secondary: '#cbd5e1',
-            muted: '#64748b',
+            primary: '#fafafa',    // Zinc-50
+            secondary: '#a1a1aa',  // Zinc-400
+            muted: '#71717a',      // Zinc-500
           }
         }
       },

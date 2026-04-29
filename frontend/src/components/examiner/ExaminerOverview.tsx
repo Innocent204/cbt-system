@@ -32,129 +32,91 @@ const ExaminerOverview: React.FC = () => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto pt-4">
-            {/* Examiner Stats Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Total Questions</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">
-                                {stats?.totalQuestions || '---'}
-                            </p>
-                            <p className="text-xs text-green-600 dark:text-green-400">+{stats?.questionsAddedToday} this week</p>
-                        </div>
-                        <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-500/20 rounded-lg flex items-center justify-center">
-                            <FileText size={24} className="text-indigo-600 dark:text-indigo-400" />
-                        </div>
-                    </div>
+        <div className="space-y-8 pb-12">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-dark-secondary p-8 rounded-[2.5rem] border border-dark-border-primary ring-1 ring-white/5">
+                <div className="space-y-4">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-accent-indigo">Instructional Analytics</p>
+                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">Examiner <span className="text-dark-text-muted">Command</span></h1>
+                    <p className="text-lg text-dark-text-secondary font-medium max-w-xl">Overview of exam systems and candidate performance pipelines.</p>
                 </div>
-
-                <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Active Exams</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">
-                                {stats?.activeExams || '---'}
-                            </p>
-                            <p className="text-xs text-indigo-600 dark:text-indigo-400">{stats?.examsPublishedToday} published today</p>
-                        </div>
-                        <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-500/20 rounded-lg flex items-center justify-center">
-                            <Calendar size={24} className="text-indigo-600 dark:text-indigo-400" />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Students Tested</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">
-                                {stats?.studentsTested || '---'}
-                            </p>
-                            <p className="text-xs text-indigo-600 dark:text-indigo-400">+{stats?.studentGrowth} this month</p>
-                        </div>
-                        <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-500/20 rounded-lg flex items-center justify-center">
-                            <Users size={24} className="text-indigo-600 dark:text-indigo-400" />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Avg Score</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">
-                                {stats?.averageScore}%
-                            </p>
-                            <p className="text-xs text-indigo-600 dark:text-indigo-400">+{stats?.scoreImprovement}% improvement</p>
-                        </div>
-                        <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-500/20 rounded-lg flex items-center justify-center">
-                            <TrendingUp size={24} className="text-indigo-600 dark:text-indigo-400" />
-                        </div>
-                    </div>
+                <div className="flex items-center gap-4 bg-dark-tertiary/50 p-2 rounded-2xl border border-dark-border-primary ring-1 ring-white/5">
+                    <div className="px-5 py-3 rounded-xl bg-dark-secondary border border-dark-border-primary text-[10px] font-black uppercase tracking-widest text-dark-text-primary shadow-xl">System Clock</div>
+                    <div className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-dark-accent-indigo tabular-nums">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                 </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div className="bg-white dark:bg-dark-surface p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text-primary mb-4">Quick Actions</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button
-                            onClick={() => navigate('/examiner/questions')}
-                            className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors text-left"
-                        >
-                            <FileText size={20} className="text-indigo-600 dark:text-indigo-400 mb-2" />
-                            <div className="text-sm font-medium text-gray-900 dark:text-dark-text-primary">Manage Questions</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Create & edit questions</div>
-                        </button>
-                        <button
-                            onClick={() => navigate('/examiner/create-exam')}
-                            className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors text-left"
-                        >
-                            <Calendar size={20} className="text-indigo-600 dark:text-indigo-400 mb-2" />
-                            <div className="text-sm font-medium text-gray-900 dark:text-dark-text-primary">Schedule Exam</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Create new exam</div>
-                        </button>
-                        <button
-                            onClick={() => navigate('/examiner/results')}
-                            className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors text-left"
-                        >
-                            <BarChart3 size={20} className="text-indigo-600 dark:text-indigo-400 mb-2" />
-                            <div className="text-sm font-medium text-gray-900 dark:text-dark-text-primary">View Results</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Student performance</div>
-                        </button>
-                        <button
-                            onClick={() => navigate('/examiner/results')}
-                            className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors text-left"
-                        >
-                            <Clock size={20} className="text-indigo-600 dark:text-indigo-400 mb-2" />
-                            <div className="text-sm font-medium text-gray-900 dark:text-dark-text-primary">Exam History</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Past exams</div>
-                        </button>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                    { label: 'Intelligence Bank', value: stats?.totalQuestions, sub: `+${stats?.questionsAddedToday} added`, icon: FileText, color: 'text-dark-accent-indigo' },
+                    { label: 'Active Deployment', value: stats?.activeExams, sub: `${stats?.examsPublishedToday} published`, icon: Calendar, color: 'text-dark-accent-emerald' },
+                    { label: 'Candidate Throughput', value: stats?.studentsTested, sub: `+${stats?.studentGrowth} growth`, icon: Users, color: 'text-dark-accent-cyan' },
+                    { label: 'Aggregate Score', value: `${stats?.averageScore}%`, sub: `+${stats?.scoreImprovement}% gain`, icon: TrendingUp, color: 'text-dark-accent-amber' },
+                ].map((stat, i) => (
+                    <div key={i} className="bg-dark-secondary rounded-2xl p-6 border border-dark-border-primary hover:border-dark-text-muted transition-all duration-300">
+                        <div className="flex items-start justify-between mb-4">
+                            <div className={`p-2 rounded-lg bg-dark-tertiary ${stat.color}`}>
+                                <stat.icon size={20} />
+                            </div>
+                            <div className="w-1.5 h-1.5 rounded-full bg-dark-tertiary animate-pulse" />
+                        </div>
+                        <p className="text-2xl font-black text-white mb-1 tracking-tight">{stat.value || '---'}</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted mb-3">{stat.label}</p>
+                        <p className={`text-[10px] font-black uppercase tracking-widest ${stat.color}`}>{stat.sub}</p>
+                    </div>
+                ))}
+            </div>
+
+            {/* Actions + Activity */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 bg-dark-secondary p-6 md:p-10 rounded-[2.5rem] border border-dark-border-primary ring-1 ring-white/5">
+                    <h3 className="text-xl font-black text-white mb-8 tracking-tight uppercase tracking-widest text-[10px] opacity-40">Operation Protocols</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {[
+                            { label: 'Question Architect', desc: 'Manage conceptual logic', icon: FileText, path: '/examiner/questions', color: 'text-dark-accent-indigo' },
+                            { label: 'Exam Scheduler', desc: 'Initialize deployment', icon: Calendar, path: '/examiner/create-exam', color: 'text-dark-accent-emerald' },
+                            { label: 'Evaluation Matrix', desc: 'Analyze results data', icon: BarChart3, path: '/examiner/results', color: 'text-dark-accent-cyan' },
+                            { label: 'Deployment Logs', desc: 'Execution history', icon: Clock, path: '/examiner/results', color: 'text-dark-text-muted' },
+                        ].map((action, i) => (
+                            <button
+                                key={i}
+                                onClick={() => navigate(action.path)}
+                                className="group p-6 bg-dark-tertiary/20 rounded-2xl border border-dark-border-primary hover:border-dark-accent-indigo hover:translate-y-[-2px] transition-all duration-300 text-left"
+                            >
+                                <div className={`w-12 h-12 rounded-xl bg-dark-tertiary flex items-center justify-center mb-5 ${action.color} group-hover:bg-dark-accent-indigo group-hover:text-white transition-all shadow-xl`}>
+                                    <action.icon size={20} />
+                                </div>
+                                <p className="text-sm font-black text-white mb-1 tracking-tight">{action.label}</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted">{action.desc}</p>
+                            </button>
+                        ))}
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text-primary mb-4">Recent Activity</h3>
-                    <div className="space-y-3">
+                <div className="bg-dark-secondary p-6 md:p-10 rounded-[2.5rem] border border-dark-border-primary ring-1 ring-white/5 flex flex-col">
+                    <h3 className="text-xl font-black text-white mb-8 tracking-tight uppercase tracking-widest text-[10px] opacity-40">Intelligence Feed</h3>
+                    <div className="space-y-6 flex-1">
                         {recentActivity.map((activity: any, idx: number) => (
-                            <div key={idx} className="flex items-center space-x-3">
-                                <div className={`w-2 h-2 ${activity.color} rounded-full`}></div>
-                                <div className="flex-1">
-                                    <p className="text-sm font-medium text-gray-900 dark:text-dark-text-primary">{activity.label}</p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">{activity.time}</p>
+                            <div key={idx} className="flex items-center gap-5 group cursor-pointer">
+                                <div className={`w-2 h-2 ${activity.color} rounded-full shrink-0 shadow-[0_0_8px_rgba(255,255,255,0.1)] group-hover:scale-150 transition-transform`} />
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-bold text-dark-text-primary truncate group-hover:text-dark-accent-indigo transition-colors">{activity.label}</p>
+                                    <p className="text-[10px] font-black text-dark-text-muted uppercase tracking-widest mt-1 italic">{activity.time}</p>
                                 </div>
                             </div>
                         ))}
                         {recentActivity.length === 0 && (
-                            <p className="text-sm text-gray-500 dark:text-gray-400 italic">No recent activity found.</p>
+                            <div className="flex flex-col items-center justify-center py-10 text-center flex-1">
+                                <div className="w-16 h-16 rounded-full bg-dark-tertiary flex items-center justify-center text-dark-text-muted mb-6 opacity-20 border border-dark-border-primary ring-4 ring-dark-tertiary/50">
+                                    <Clock size={24} />
+                                </div>
+                                <p className="text-xs font-black text-dark-text-muted uppercase tracking-widest italic leading-relaxed">No telemetry active in current session</p>
+                            </div>
                         )}
                     </div>
                 </div>
             </div>
-
         </div>
     );
 };

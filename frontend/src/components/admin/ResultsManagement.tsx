@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Download, Eye, Edit, Clock, TrendingUp, Award, BarChart3, FileText } from 'lucide-react';
-import LoadingScreen from '../common/LoadingScreen';
+import { useNavigate } from 'react-router-dom';
+import { Search, Download, FileText, Eye, Edit, BarChart3, Award, TrendingUp, Users, Clock, Filter, X } from 'lucide-react';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import examService from '../../services/examService';
+import LoadingScreen from '../common/LoadingScreen';
+import { toast } from 'react-toastify';
 
 interface ExamResult {
   id: number;
@@ -95,9 +98,9 @@ const ResultsManagement: React.FC = () => {
 
             const s = examStats[examId];
             s.totalSubmissions++;
-            s.averageScore += r.percentage;
-            s.highestScore = Math.max(s.highestScore, r.percentage);
-            s.lowestScore = Math.min(s.lowestScore, r.percentage);
+            s.averageScore += Number(r.percentage) || 0;
+            s.highestScore = Math.max(s.highestScore, Number(r.percentage) || 0);
+            s.lowestScore = Math.min(s.lowestScore, Number(r.percentage) || 0);
             if (r.passed) s.passRate++;
             s.gradeDistribution[r.grade] = (s.gradeDistribution[r.grade] || 0) + 1;
             s.averageTimeSpent += r.timeSpent;
@@ -158,9 +161,105 @@ const ResultsManagement: React.FC = () => {
     return `${minutes}m`;
   };
 
+  const downloadSingleResult = (result: ExamResult) => {
+    const headers = ['Exam Title', 'Student Name', 'Course', 'Score', 'Total Marks', 'Percentage', 'Grade', 'Status', 'Time Spent', 'Submitted At'];
+    const csvContent = [
+      headers.join(','),
+      [
+        `"${result.examTitle}"`,
+        `"${result.studentName}"`,
+        `"${result.course}"`,
+        result.obtainedPoints,
+        result.totalPoints,
+        `${Number(result.percentage).toFixed(2)}%`,
+        result.grade,
+        result.status,
+        result.timeSpent,
+        new Date(result.submittedAt).toLocaleString()
+      ].join(',')
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `result_${result.studentName}_${result.examTitle.replace(/\s+/g, '_')}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Result downloaded successfully');
+  };
+
   const exportResults = (format: 'csv' | 'excel' | 'pdf') => {
-    console.log(`Exporting results in ${format} format`);
-    // Implementation 
+    if (results.length === 0) {
+      toast.error('No results to export');
+      return;
+    }
+
+    if (format === 'csv') {
+      // Create CSV content
+      const headers = ['Exam Title', 'Student Name', 'Course', 'Score', 'Total Marks', 'Percentage', 'Grade', 'Status', 'Time Spent', 'Submitted At'];
+      const csvContent = [
+        headers.join(','),
+        ...results.map(r => [
+          `"${r.examTitle}"`,
+          `"${r.studentName}"`,
+          `"${r.course}"`,
+          r.obtainedPoints,
+          r.totalPoints,
+          `${Number(r.percentage).toFixed(2)}%`,
+          r.grade,
+          r.status,
+          r.timeSpent,
+          new Date(r.submittedAt).toLocaleString()
+        ].join(','))
+      ].join('\n');
+
+      // Create download
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `exam_results_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success('Results exported successfully');
+    } else if (format === 'excel') {
+      // For Excel, we'll export as CSV with .xlsx extension (simplified approach)
+      // In production, you'd use a library like xlsx
+      toast.info('Excel export coming soon - using CSV format instead');
+      const headers = ['Exam Title', 'Student Name', 'Course', 'Score', 'Total Marks', 'Percentage', 'Grade', 'Status', 'Time Spent', 'Submitted At'];
+      const csvContent = [
+        headers.join(','),
+        ...results.map(r => [
+          `"${r.examTitle}"`,
+          `"${r.studentName}"`,
+          `"${r.course}"`,
+          r.obtainedPoints,
+          r.totalPoints,
+          `${Number(r.percentage).toFixed(2)}%`,
+          r.grade,
+          r.status,
+          r.timeSpent,
+          new Date(r.submittedAt).toLocaleString()
+        ].join(','))
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `exam_results_${new Date().toISOString().split('T')[0]}.xlsx`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (format === 'pdf') {
+      toast.info('PDF export coming soon - use CSV format for now');
+    }
   };
 
   const viewResultDetails = (result: ExamResult) => {
@@ -231,7 +330,7 @@ const ResultsManagement: React.FC = () => {
             <div>
               <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Average Score</p>
               <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                {Math.round(results.reduce((sum, r) => sum + r.percentage, 0) / results.length)}%
+                {Math.round(results.reduce((sum, r) => sum + (Number(r.percentage) || 0), 0) / results.length)}%
               </p>
             </div>
             <div className="w-12 h-12 bg-purple-100 dark:bg-purple-500/20 rounded-lg flex items-center justify-center">
@@ -407,7 +506,7 @@ const ResultsManagement: React.FC = () => {
                           {result.obtainedPoints}/{result.totalPoints}
                         </div>
                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {result.percentage.toFixed(1)}%
+                          {Number(result.percentage).toFixed(1)}%
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -430,10 +529,16 @@ const ResultsManagement: React.FC = () => {
                         >
                           <Eye size={16} />
                         </button>
-                        <button className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3">
+                        <button
+                          onClick={() => downloadSingleResult(result)}
+                          className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3"
+                        >
                           <Download size={16} />
                         </button>
-                        <button className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300">
+                        <button
+                          onClick={() => toast.info('Results cannot be edited after grading')}
+                          className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
+                        >
                           <Edit size={16} />
                         </button>
                       </td>
@@ -459,19 +564,19 @@ const ResultsManagement: React.FC = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Average Score:</span>
-                      <span className="text-sm font-medium text-gray-900 dark:text-dark-text-primary">{stat.averageScore.toFixed(1)}%</span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-dark-text-primary">{Number(stat.averageScore).toFixed(1)}%</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Highest Score:</span>
-                      <span className="text-sm font-medium text-green-600 dark:text-green-400">{stat.highestScore}%</span>
+                      <span className="text-sm font-medium text-green-600 dark:text-green-400">{Number(stat.highestScore)}%</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Lowest Score:</span>
-                      <span className="text-sm font-medium text-red-600 dark:text-red-400">{stat.lowestScore}%</span>
+                      <span className="text-sm font-medium text-red-600 dark:text-red-400">{Number(stat.lowestScore)}%</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Pass Rate:</span>
-                      <span className="text-sm font-medium text-blue-600 dark:text-blue-400">{stat.passRate.toFixed(1)}%</span>
+                      <span className="text-sm font-medium text-blue-600 dark:text-blue-400">{Number(stat.passRate).toFixed(1)}%</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Avg Time:</span>
@@ -490,10 +595,140 @@ const ResultsManagement: React.FC = () => {
           )}
 
           {activeTab === 'analytics' && (
-            <div className="text-center py-12">
-              <BarChart3 size={48} className="mx-auto text-gray-400 dark:text-gray-500 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-dark-text-primary mb-2">Analytics Dashboard</h3>
-              <p className="text-gray-500 dark:text-gray-400">Advanced analytics and insights coming soon</p>
+            <div className="space-y-6">
+              {/* Key Metrics Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Total Submissions</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">{results.length}</p>
+                    </div>
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-lg flex items-center justify-center">
+                      <Users size={24} className="text-blue-600 dark:text-blue-400" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Average Score</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">
+                        {results.length > 0 ? Math.round(results.reduce((sum, r) => sum + (Number(r.percentage) || 0), 0) / results.length) : 0}%
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-500/20 rounded-lg flex items-center justify-center">
+                      <TrendingUp size={24} className="text-purple-600 dark:text-purple-400" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Pass Rate</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">
+                        {results.length > 0 ? Math.round((results.filter(r => r.passed).length / results.length) * 100) : 0}%
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-500/20 rounded-lg flex items-center justify-center">
+                      <Award size={24} className="text-green-600 dark:text-green-400" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Avg Time Spent</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">
+                        {results.length > 0 ? Math.round(results.reduce((sum, r) => sum + r.timeSpent, 0) / results.length) : 0}m
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-orange-100 dark:bg-orange-500/20 rounded-lg flex items-center justify-center">
+                      <Clock size={24} className="text-orange-600 dark:text-orange-400" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Charts Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Grade Distribution Chart */}
+                <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text-primary mb-4">Grade Distribution</h3>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: 'A', value: results.filter(r => r.grade.startsWith('A')).length },
+                            { name: 'B', value: results.filter(r => r.grade.startsWith('B')).length },
+                            { name: 'C', value: results.filter(r => r.grade.startsWith('C')).length },
+                            { name: 'D', value: results.filter(r => r.grade === 'D').length },
+                            { name: 'F', value: results.filter(r => r.grade === 'F').length }
+                          ]}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          <Cell fill="#10b981" />
+                          <Cell fill="#3b82f6" />
+                          <Cell fill="#f59e0b" />
+                          <Cell fill="#f97316" />
+                          <Cell fill="#ef4444" />
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Performance by Exam Chart */}
+                <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text-primary mb-4">Performance by Exam</h3>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={statistics}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="examTitle" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="averageScore" fill="#3b82f6" name="Avg Score" />
+                        <Bar dataKey="passRate" fill="#10b981" name="Pass Rate" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+
+              {/* Pass/Fail by Exam */}
+              <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text-primary mb-4">Pass/Fail Breakdown by Exam</h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={statistics.map(s => ({
+                      examTitle: s.examTitle,
+                      passed: s.passRate,
+                      failed: 100 - s.passRate
+                    }))}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="examTitle" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="passed" stackId="a" fill="#10b981" name="Passed" />
+                      <Bar dataKey="failed" stackId="a" fill="#ef4444" name="Failed" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -501,25 +736,21 @@ const ResultsManagement: React.FC = () => {
 
       {/* Result Details Modal */}
       {showDetailsModal && selectedResult && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-dark-surface rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 dark:border-dark-border-primary">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-dark-text-primary">
-                  Result Details
-                </h3>
-                <button
-                  onClick={() => setShowDetailsModal(false)}
-                  className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-gray-200 dark:border-dark-border-primary flex justify-between items-center bg-gray-50/50 dark:bg-dark-surface">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-dark-text-primary">
+                Result Details
+              </h3>
+              <button
+                onClick={() => setShowDetailsModal(false)}
+                className="w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-full transition-all"
+              >
+                <X size={20} />
+              </button>
             </div>
 
-            <div className="p-6">
+            <div className="p-6 overflow-y-auto flex-1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h4 className="text-lg font-medium text-gray-900 dark:text-dark-text-primary mb-4">Student Information</h4>
@@ -545,7 +776,7 @@ const ResultsManagement: React.FC = () => {
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Score:</span>
                       <span className="text-sm font-medium text-gray-900 dark:text-dark-text-primary">
-                        {selectedResult.obtainedPoints}/{selectedResult.totalPoints} ({selectedResult.percentage.toFixed(1)}%)
+                        {selectedResult.obtainedPoints}/{selectedResult.totalPoints} ({Number(selectedResult.percentage).toFixed(1)}%)
                       </span>
                     </div>
                     <div className="flex justify-between">

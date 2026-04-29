@@ -7,7 +7,6 @@ import UserManagement from '../admin/UserManagement';
 import CourseExamManagement from '../admin/CourseExamManagement';
 import SystemReports from '../admin/SystemReports';
 import QuestionBankManagement from '../examiner/QuestionBankManagement';
-import StudentHome from '../student/StudentHome';
 import { Menu } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -97,23 +96,24 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, userName: u
   const shouldUseDynamicContent = !!content;
 
   return (
-    <div className="dark flex h-screen bg-gray-50 dark:bg-slate-950 relative overflow-hidden text-gray-900 dark:text-dark-text-primary">
-      <div className="mesh-bg" />
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 dark:bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 dark:bg-purple-600/5 rounded-full blur-[120px] pointer-events-none" />
-
+    <div className="flex h-screen bg-dark-primary relative overflow-hidden text-dark-text-primary selection:bg-dark-accent-indigo/30">
+      {/* Refined background accents */}
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.03),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(6,182,212,0.03),transparent_50%)] pointer-events-none" />
+      
+      {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
       </AnimatePresence>
 
+      {/* Sidebar Wrapper */}
       <div className={`
         fixed inset-y-0 left-0 z-50 transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) lg:relative lg:translate-x-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
@@ -126,29 +126,31 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, userName: u
         />
       </div>
 
+      {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
         <Header userName={userName} />
 
+        {/* Mobile Sidebar Toggle (Floating) */}
         {!sidebarOpen && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden fixed left-4 bottom-4 z-50 p-4 rounded-full bg-blue-600 text-white shadow-lg shadow-blue-500/40 hover:bg-blue-700 transition-all active:scale-95"
+            className="lg:hidden fixed left-6 bottom-6 z-50 p-4 rounded-2xl bg-dark-accent-indigo text-white shadow-2xl shadow-dark-accent-indigo/40 hover:bg-indigo-500 transition-all active:scale-95 border border-white/10"
           >
             <Menu size={24} />
           </motion.button>
         )}
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto custom-scrollbar">
-          <div className="p-4 sm:p-8 max-w-[1600px] mx-auto">
+          <div className="p-4 sm:p-6 lg:p-10 max-w-[1920px] mx-auto">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
-                initial={{ y: 20, opacity: 0 }}
+                initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -20, opacity: 0 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                exit={{ y: -10, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               >
                 {shouldUseDynamicContent ? content : children}
               </motion.div>

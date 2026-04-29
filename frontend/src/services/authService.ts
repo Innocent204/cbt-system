@@ -14,9 +14,6 @@ class AuthService {
   async login(username: string, password: string): Promise<ApiResponse<User>> {
     try {
       const loginUrl = '/accounts/auth/login/'.trim();
-      console.log('Attempting login to:', loginUrl);
-      console.log('API Base URL:', import.meta.env.VITE_API_URL || 'http://localhost:8000/api');
-
       const response = await api.post<LoginResponse>(loginUrl, {
         username,
         password

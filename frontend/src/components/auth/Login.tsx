@@ -73,42 +73,47 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-slate-950">
-      {/* Background Elements */}
-      <div className="mesh-bg opacity-30" />
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse-slow" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[120px]" />
+    <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-dark-primary italic">
+      {/* Background Elements - Professional Minimalism */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-[0.02] pointer-events-none" 
+           style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} 
+      />
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-dark-accent-indigo/10 rounded-full blur-[120px]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-dark-accent-indigo/5 rounded-full blur-[120px]" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.6 }}
         className="relative z-10 w-full max-w-[440px]"
       >
-        <div className="glass rounded-[2.5rem] p-8 sm:p-12 shadow-2xl border border-white/10 backdrop-blur-2xl">
-          <div className="text-center mb-10 flex flex-col items-center">
+        <div className="bg-dark-secondary rounded-[2.5rem] p-8 sm:p-12 shadow-2xl border border-dark-border-primary ring-1 ring-white/5 relative overflow-hidden">
+          <div className="text-center mb-12 flex flex-col items-center">
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-              className="mb-6"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="mb-8"
             >
-              <Logo size={84} showText={true} className="flex-col !gap-6" />
+              <Logo size={64} showText={false} />
             </motion.div>
-            <p className="text-slate-400 font-medium tracking-wide flex items-center justify-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-              Portal
+            <h1 className="text-4xl font-black text-white mb-2 tracking-tight uppercase">
+              Identity <span className="text-dark-text-muted">Portal</span>
+            </h1>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-accent-indigo flex items-center justify-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-dark-accent-indigo animate-pulse" />
+              Secure Authentication Required
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="username" className="block text-sm font-bold text-slate-300 ml-1">
-                Username
+            <div className="space-y-3">
+              <label htmlFor="username" className="block text-[10px] font-black uppercase tracking-widest text-dark-text-muted ml-1">
+                Registry ID
               </label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-blue-500">
-                  <User size={18} className="text-slate-500" />
+                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-dark-accent-indigo">
+                  <User size={18} className="text-dark-text-muted" />
                 </div>
                 <input
                   type="text"
@@ -119,18 +124,18 @@ const Login: React.FC = () => {
                   placeholder="admin_doe"
                   disabled={loading}
                   autoFocus
-                  className="w-full pl-11 pr-4 py-4 bg-slate-900/50 border border-slate-800 rounded-2xl text-white placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 transition-all duration-300"
+                  className="w-full pl-14 pr-6 py-5 bg-dark-tertiary border border-dark-border-primary rounded-2xl text-white placeholder:text-dark-text-muted focus:outline-none focus:ring-2 focus:ring-dark-accent-indigo/20 focus:border-dark-accent-indigo transition-all duration-300 font-black text-[10px] uppercase tracking-widest"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-bold text-slate-300 ml-1">
-                Password
+            <div className="space-y-3">
+              <label htmlFor="password" className="block text-[10px] font-black uppercase tracking-widest text-dark-text-muted ml-1">
+                Access Secret
               </label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-blue-500">
-                  <Lock size={18} className="text-slate-500" />
+                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-dark-accent-indigo">
+                  <Lock size={18} className="text-dark-text-muted" />
                 </div>
                 <input
                   type="password"
@@ -140,7 +145,7 @@ const Login: React.FC = () => {
                   onChange={handleChange}
                   placeholder="••••••••"
                   disabled={loading}
-                  className="w-full pl-11 pr-4 py-4 bg-slate-900/50 border border-slate-800 rounded-2xl text-white placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 transition-all duration-300"
+                  className="w-full pl-14 pr-6 py-5 bg-dark-tertiary border border-dark-border-primary rounded-2xl text-white placeholder:text-dark-text-muted focus:outline-none focus:ring-2 focus:ring-dark-accent-indigo/20 focus:border-dark-accent-indigo transition-all duration-300 font-black text-[10px] uppercase tracking-widest"
                 />
               </div>
             </div>
@@ -148,10 +153,10 @@ const Login: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-4 mt-4 rounded-2xl font-black text-lg transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden group
+              className={`w-full py-5 mt-6 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden group border border-white/10
                 ${loading
-                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xl shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0'
+                  ? 'bg-dark-tertiary text-dark-text-muted cursor-not-allowed'
+                  : 'bg-white text-dark-primary shadow-2xl hover:bg-dark-accent-indigo hover:text-white hover:-translate-y-0.5 active:translate-y-0'
                 }`}
             >
               <AnimatePresence mode="wait">
@@ -164,7 +169,7 @@ const Login: React.FC = () => {
                     className="flex items-center gap-2"
                   >
                     <Loader2 className="animate-spin" size={20} />
-                    <span>Processing...</span>
+                    <span>Validating...</span>
                   </motion.div>
                 ) : (
                   <motion.div
@@ -174,17 +179,17 @@ const Login: React.FC = () => {
                     exit={{ opacity: 0 }}
                     className="flex items-center gap-2"
                   >
-                    <span>Log In to System</span>
-                    <Zap size={18} className="group-hover:text-yellow-400 transition-colors" />
+                    <span>Authorize Portal Access</span>
+                    <Zap size={18} className="group-hover:text-amber-400 transition-colors" />
                   </motion.div>
                 )}
               </AnimatePresence>
             </button>
           </form>
 
-          <p className="mt-8 text-center text-slate-500 font-medium tracking-wide">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-blue-500 hover:text-blue-400 transition-colors font-bold">
+          <p className="mt-10 text-center text-[10px] font-black uppercase tracking-widest text-dark-text-muted">
+            New personnel member?{' '}
+            <Link to="/register" className="text-white hover:text-dark-accent-indigo transition-colors border-b border-white/20 pb-0.5">
               Sign up
             </Link>
           </p>

@@ -189,6 +189,42 @@ class ExamAttemptViewSet(viewsets.ModelViewSet):
             attempt.score = total_score
             if attempt.exam.total_marks > 0:
                 attempt.percentage = (total_score / attempt.exam.total_marks) * 100
+            
+            # Create Result record
+            from results.models import Result
+            
+            # Calculate statistics
+            total_questions = attempt.exam.questions.count()
+            correct_answers = attempt.answers.filter(is_correct=True).count()
+            incorrect_answers = attempt.answers.filter(is_correct=False).count()
+            unanswered = total_questions - attempt.answers.count()
+            
+            # Calculate time taken
+            from datetime import timedelta
+            time_taken = attempt.submit_time - attempt.start_time if attempt.submit_time else timedelta(0)
+            time_taken_minutes = int(time_taken.total_seconds() / 60)
+            
+            # Calculate grade
+            grade = Result.calculate_grade(attempt.percentage or 0)
+            
+            # Create or update Result
+            Result.objects.update_or_create(
+                attempt=attempt,
+                defaults={
+                    'exam': attempt.exam,
+                    'student': attempt.student,
+                    'total_marks': attempt.exam.total_marks,
+                    'marks_obtained': attempt.score or 0,
+                    'percentage': attempt.percentage or 0,
+                    'is_passed': (attempt.percentage or 0) >= attempt.exam.passing_marks,
+                    'grade': grade,
+                    'total_questions': total_questions,
+                    'correct_answers': correct_answers,
+                    'incorrect_answers': incorrect_answers,
+                    'unanswered': unanswered,
+                    'time_taken_minutes': time_taken_minutes
+                }
+            )
         
         attempt.save()
         

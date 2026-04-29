@@ -5,7 +5,6 @@ export const useHeartbeat = (attemptId: number | null, intervalMs: number = 3000
     const sendHeartbeat = useCallback(async (status: 'active' | 'suspended' | 'disconnected' = 'active') => {
         if (!attemptId) return;
 
-        console.log(`[Heartbeat] Sending status: ${status} for attempt: ${attemptId}`);
         const result = await examService.sendHeartbeat(attemptId, status);
 
         if (!result.success) {

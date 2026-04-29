@@ -78,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({ userName }) => {
 
   const handleLogout = async () => {
     await authService.logout();
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   const handleSettings = () => {
@@ -86,125 +86,125 @@ const Header: React.FC<HeaderProps> = ({ userName }) => {
   };
 
   const handleHelp = () => {
-    console.log('Opening help...');
+    // Help functionality to be implemented
   };
 
   return (
     <>
-      <header className="glass sticky top-0 z-30 transition-all duration-300">
-        <div className="px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Left Section - Search Bar & Mobile Logo */}
-            <div className="flex items-center flex-1">
-              {/* Mobile Logo */}
-              <div className="lg:hidden mr-4">
-                <Logo size={40} showText={true} />
-              </div>
-
-              {/* Search Bar */}
-              <div className="flex-1 max-w-2xl mx-4 lg:mx-8">
-                <form onSubmit={handleSearch}>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Search size={18} className="text-gray-400 group-focus-within:text-dark-accent-blue transition-colors" />
-                    </div>
-                    <input
-                      type="text"
-                      placeholder={`Search ${userRole === 'admin' ? 'users, courses, exams...' : userRole === 'examiner' ? 'questions, exams...' : 'exams, results...'}`}
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onFocus={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
-                      className="w-full pl-10 pr-16 py-3 bg-slate-800/40 border border-slate-700/50 rounded-2xl text-sm text-dark-text-primary placeholder-dark-text-muted focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-slate-800 transition-all duration-300"
-                    />
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <kbd className="hidden sm:inline-flex items-center space-x-1 px-2 py-0.5 bg-dark-tertiary border border-dark-border-primary rounded-lg text-[10px] text-dark-text-muted font-semibold group-focus-within:opacity-0 transition-opacity">
-                        <span className="text-xs">⌘</span>
-                        <span>K</span>
-                      </kbd>
-                    </div>
-                  </div>
-                </form>
-              </div>
+    <header className="glass sticky top-0 z-30 transition-all duration-300 border-b border-dark-border-primary/50">
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Left Section - Search Bar & Breadcrumbs */}
+          <div className="flex items-center flex-1 min-w-0">
+            {/* Mobile Logo */}
+            <div className="lg:hidden mr-4">
+              <Logo size={36} showText={false} />
             </div>
 
-            {/* Right Section - Notifications & User */}
-            <div className="flex items-center space-x-3">
-              {/* Notifications */}
-              <NotificationBell />
+            {/* Breadcrumbs (Professional labels) */}
+            <div className="hidden md:flex items-center gap-2 mr-8 text-[11px] font-black uppercase tracking-widest text-dark-text-muted">
+              <span className="hover:text-dark-text-secondary cursor-pointer transition-colors">Portal</span>
+              <span className="opacity-30">/</span>
+              <span className="text-dark-accent-indigo">{getRoleDisplayName(userRole)}</span>
+            </div>
 
-              {/* User Profile */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-surface hover:bg-opacity-80 transition-all duration-200 group"
-                >
-                  <div className="text-right hidden sm:block">
-                    <div className="text-sm font-bold text-slate-900 dark:text-white font-display">{userName}</div>
-                    <div className={`text-[10px] px-2 py-0.5 rounded-full inline-block border font-black uppercase tracking-wider ${getRoleBadgeColor(userRole)}`}>
-                      {getRoleDisplayName(userRole)}
-                    </div>
-                  </div>
-                  <div className={`w-9 h-9 ${getRoleColor(userRole)} rounded-full flex items-center justify-center ring-2 ring-white dark:ring-dark-secondary shadow-sm`}>
-                    <User size={16} className="text-white" />
-                  </div>
-                </button>
+            {/* Search Bar - Unified sleek styling */}
+            <div className="flex-1 max-w-xl pr-4 lg:pr-8">
+              <form onSubmit={handleSearch} className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Search size={16} className="text-dark-text-muted group-focus-within:text-dark-accent-indigo transition-colors" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search architecture, data, exams..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+                  className="w-full pl-10 pr-4 py-2 bg-dark-tertiary/20 hover:bg-dark-tertiary/40 border border-dark-border-primary rounded-xl text-sm text-dark-text-primary placeholder-dark-text-muted focus:outline-none focus:ring-4 focus:ring-dark-accent-indigo/10 focus:border-dark-accent-indigo focus:bg-dark-tertiary/60 transition-all duration-300"
+                />
+              </form>
+            </div>
+          </div>
 
-                {/* User Dropdown Menu */}
+          {/* Right Section - Notifications & User */}
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <NotificationBell />
+
+            <div className="h-6 w-px bg-dark-border-primary mx-1 hidden sm:block" />
+
+            {/* User Profile Hook */}
+            <div className="relative">
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="flex items-center gap-3 p-1 rounded-xl hover:bg-dark-tertiary transition-all group"
+              >
+                <div className="text-right hidden lg:block">
+                  <p className="text-xs font-bold text-dark-text-primary group-hover:text-dark-accent-indigo transition-colors leading-none">{userName}</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted mt-1 leading-none">
+                    {getRoleDisplayName(userRole)}
+                  </p>
+                </div>
+                <div className="relative">
+                  <div className={`w-9 h-9 rounded-xl ${getRoleColor(userRole)} flex items-center justify-center text-white shadow-lg shadow-indigo-500/10`}>
+                    {userName.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-lg bg-dark-secondary border-2 border-dark-primary flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  </div>
+                </div>
+              </button>
+
+              {/* User Dropdown - Modernized */}
+              <AnimatePresence>
                 {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-dark-surface rounded-2xl shadow-xl border border-gray-200/60 dark:border-dark-border-primary overflow-hidden z-50">
-                    <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-dark-secondary dark:to-dark-tertiary border-b border-gray-200 dark:border-dark-border-primary">
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-10 h-10 ${getRoleColor(userRole)} rounded-full flex items-center justify-center`}>
-                          <User size={18} className="text-white" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 dark:text-dark-text-primary">{userName}</p>
-                          <p className="text-sm text-gray-600 dark:text-dark-text-secondary">{getRoleDisplayName(userRole)}</p>
-                        </div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute right-0 mt-3 w-64 bg-dark-secondary border border-dark-border-primary rounded-2xl shadow-2xl shadow-black/50 overflow-hidden z-50"
+                  >
+                    <div className="p-5 border-b border-dark-border-primary bg-dark-tertiary/20">
+                      <p className="text-xs font-black uppercase tracking-widest text-dark-text-muted mb-1">Authenticated as</p>
+                      <p className="font-bold text-dark-text-primary truncate">{userName}</p>
+                      <div className={`mt-2 inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest border border-white/10 ${getRoleBadgeColor(userRole)} shadow-sm`}>
+                        {getRoleDisplayName(userRole)}
                       </div>
                     </div>
-                    <div className="py-2">
+
+                    <div className="p-2 space-y-1">
                       <button
                         onClick={handleSettings}
-                        className="w-full text-left px-4 py-3 text-sm text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:hover:bg-dark-surfaceHover transition-colors flex items-center space-x-3 group"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-dark-text-secondary hover:text-dark-text-primary hover:bg-dark-tertiary transition-all group"
                       >
-                        <Settings size={16} className="text-gray-400 dark:text-dark-text-muted group-hover:text-gray-600 dark:group-hover:text-dark-text-tertiary" />
-                        <span>Settings</span>
+                        <Settings size={16} className="text-dark-text-muted group-hover:rotate-45 transition-transform" />
+                        <span>Profile Settings</span>
                       </button>
                       <button
-                        onClick={() => {
-                          setShowHelpModal(true);
-                          setShowUserMenu(false);
-                        }}
-                        className="w-full text-left px-4 py-3 text-sm text-gray-700 dark:text-dark-text-secondary hover:bg-gray-50 dark:hover:bg-dark-surfaceHover transition-colors flex items-center space-x-3 group"
+                        onClick={() => { setShowHelpModal(true); setShowUserMenu(false); }}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-dark-text-secondary hover:text-dark-text-primary hover:bg-dark-tertiary transition-all group"
                       >
-                        <HelpCircle size={16} className="text-gray-400 dark:text-dark-text-muted group-hover:text-gray-600 dark:group-hover:text-dark-text-tertiary" />
-                        <span>Help & Support</span>
-                      </button>
-                      <div className="border-t border-gray-200 dark:border-dark-border-primary my-2"></div>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left px-4 py-3 text-sm text-red-600 dark:text-dark-error hover:bg-red-50 dark:hover:bg-dark-error/10 transition-colors flex items-center space-x-3 group"
-                      >
-                        <LogOut size={16} className="text-red-500 dark:text-dark-error group-hover:text-red-600 dark:group-hover:text-dark-error" />
-                        <span>Logout</span>
+                        <HelpCircle size={16} className="text-dark-text-muted transition-transform" />
+                        <span>Support Logic</span>
                       </button>
                     </div>
-                  </div>
+
+                    <div className="p-2 border-t border-dark-border-primary">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-dark-accent-rose hover:bg-dark-accent-rose/5 transition-all group"
+                      >
+                        <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
+                        <span>System Logout</span>
+                      </button>
+                    </div>
+                  </motion.div>
                 )}
-              </div>
+              </AnimatePresence>
             </div>
           </div>
         </div>
-
-        {/* Click outside to close user menu */}
-        {showUserMenu && (
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setShowUserMenu(false)}
-          />
-        )}
-      </header>
+      </div>
+    </header>
       <CommandPalette />
 
       {/* Help & Support Modal */}

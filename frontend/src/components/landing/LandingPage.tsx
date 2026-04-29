@@ -1,119 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../common/Logo';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
-    Shield, Zap, BarChart3, Users, BookOpen, CheckCircle, ArrowRight,
-    Brain, Lock, Globe, Star, ChevronDown, Sparkles, Target, Clock,
-    Award, TrendingUp, Play, X, GraduationCap, LayoutDashboard
+    Shield, Zap, BarChart3, Users, BookOpen, ArrowRight,
+    Target, Clock, GraduationCap, LayoutDashboard, Terminal, Activity,
+    Database, Lock
 } from 'lucide-react';
 import authService from '../../services/authService';
 
-// Floating orb background
-const FloatingOrbs = () => (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-indigo-600/20 blur-[120px] animate-pulse" />
-        <div className="absolute top-1/3 -right-40 w-[500px] h-[500px] rounded-full bg-blue-500/15 blur-[120px] animate-pulse delay-700" />
-        <div className="absolute -bottom-40 left-1/4 w-[700px] h-[700px] rounded-full bg-violet-600/10 blur-[140px] animate-pulse delay-1000" />
-    </div>
-);
-
-// Animated counter
-const AnimatedCounter: React.FC<{ end: number; suffix?: string; duration?: number }> = ({ end, suffix = '', duration = 2000 }) => {
-    const [count, setCount] = useState(0);
-    const ref = useRef<HTMLSpanElement>(null);
-    const inView = useInView(ref, { once: true });
-
-    useEffect(() => {
-        if (!inView) return;
-        let start = 0;
-        const step = end / (duration / 16);
-        const timer = setInterval(() => {
-            start += step;
-            if (start >= end) { setCount(end); clearInterval(timer); }
-            else setCount(Math.floor(start));
-        }, 16);
-        return () => clearInterval(timer);
-    }, [inView, end, duration]);
-
-    return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
-};
-
-// Section fade-in wrapper
-const FadeIn: React.FC<{ children: React.ReactNode; delay?: number; className?: string }> = ({ children, delay = 0, className = '' }) => {
-    const ref = useRef(null);
-    const inView = useInView(ref, { once: true, margin: '-80px' });
-    return (
-        <motion.div
-            ref={ref}
-            initial={{ opacity: 0, y: 32 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-            className={className}
-        >
-            {children}
-        </motion.div>
-    );
-};
-
-// Feature card data
-const features = [
-    {
-        icon: Brain,
-        title: 'Adaptive Intelligence',
-        description: 'AI-assisted question generation and exam scaffolding adapts to course requirements for maximum learning impact.',
-        gradient: 'from-indigo-500 to-blue-600',
-        glow: 'group-hover:shadow-indigo-500/20',
-    },
-    {
-        icon: Shield,
-        title: 'Proctor-Grade Security',
-        description: 'JWT-secured sessions, anti-tab-switch enforcement, and real-time violation logging for exam integrity.',
-        gradient: 'from-violet-500 to-purple-600',
-        glow: 'group-hover:shadow-purple-500/20',
-    },
-    {
-        icon: Zap,
-        title: 'Instant Auto-Scoring',
-        description: 'MCQ and True/False answers are graded the moment a student submits, no waiting required.',
-        gradient: 'from-amber-500 to-orange-500',
-        glow: 'group-hover:shadow-amber-500/20',
-    },
-    {
-        icon: BarChart3,
-        title: 'Deep Analytics',
-        description: 'Distractor analysis, enrollment trends, and system health dashboards for data-driven decisions.',
-        gradient: 'from-emerald-500 to-teal-600',
-        glow: 'group-hover:shadow-emerald-500/20',
-    },
-    {
-        icon: Users,
-        title: 'Role-Based Access',
-        description: 'Granular permissions for Admins, Examiners, and Students — every role sees exactly what they need.',
-        gradient: 'from-rose-500 to-pink-600',
-        glow: 'group-hover:shadow-rose-500/20',
-    },
-    {
-        icon: Globe,
-        title: 'Bulk Question Import',
-        description: 'Upload hundreds of questions at once via CSV or JSON. Smart parsing handles edge cases automatically.',
-        gradient: 'from-sky-500 to-cyan-600',
-        glow: 'group-hover:shadow-sky-500/20',
-    },
-];
-
-// How it works steps
-const steps = [
-    { icon: Users, step: '01', title: 'Register & Get Verified', description: 'Students sign up with their institutional email. Admins approve and assign courses instantly.' },
-    { icon: BookOpen, step: '02', title: 'Examiners Craft Exams', description: 'Examiners build question banks, schedule assessments, and configure proctoring settings.' },
-    { icon: Target, step: '03', title: 'Students Take Exams', description: 'Secure, timed exam interface with real-time auto-save and anti-cheat enforcement.' },
-    { icon: Award, step: '04', title: 'Instant Results & Review', description: 'MCQs auto-grade immediately. Subjective answers go to examiner review with student notifications.' },
-];
-
-// Main Component
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();
-    const [showVideoOverlay, setShowVideoOverlay] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const isAuthenticated = authService.isAuthenticated();
 
@@ -134,380 +31,268 @@ const LandingPage: React.FC = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-[#070B14] text-white font-['Inter',sans-serif] overflow-x-hidden">
-
-            {/* NAVBAR */}
-            <motion.nav
-                initial={{ y: -80, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#070B14]/90 backdrop-blur-xl border-b border-white/5 shadow-2xl' : ''
-                    }`}
-            >
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    {/* Logo */}
-                    <Logo size={38} />
-
-                    {/* Nav links */}
-                    <div className="hidden md:flex items-center gap-8 text-sm text-slate-400">
-                        {['Features', 'How It Works', 'Roles'].map(link => (
-                            <a
-                                key={link}
-                                href={`#${link.toLowerCase().replace(/ /g, '-')}`}
-                                className="hover:text-white transition-colors duration-200"
-                            >
-                                {link}
+        <div className="min-h-screen bg-dark-primary text-white font-['Inter',sans-serif] selection:bg-dark-accent-indigo selection:text-white">
+            
+            {/* Header / Navigation */}
+            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${
+                scrolled ? 'bg-dark-primary/95 backdrop-blur-md border-dark-border-primary py-4' : 'bg-transparent border-transparent py-6'
+            }`}>
+                <div className="max-w-7xl mx-auto px-8 flex items-center justify-between">
+                    <Logo size={32} />
+                    
+                    <div className="hidden md:flex items-center gap-10">
+                        {['Architecture', 'Protocols', 'Security'].map(item => (
+                            <a key={item} href={`#${item.toLowerCase()}`} className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted hover:text-white transition-colors">
+                                {item}
                             </a>
                         ))}
                     </div>
 
-                    {/* CTAs */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-6">
                         {!isAuthenticated ? (
                             <>
-                                <button
-                                    onClick={() => navigate('/login')}
-                                    className="px-4 py-2 text-sm text-slate-300 hover:text-white transition-colors"
-                                >
+                                <button onClick={() => navigate('/login')} className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted hover:text-white transition-colors">
                                     Sign In
                                 </button>
-                                <button
-                                    onClick={() => navigate('/register')}
-                                    className="px-5 py-2 text-sm font-semibold bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-xl transition-all duration-300 shadow-lg shadow-indigo-500/25"
-                                >
-                                    Sign Up
+                                <button onClick={() => navigate('/register')} className="bg-white text-dark-primary px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-dark-accent-indigo hover:text-white transition-all">
+                                    Initialize
                                 </button>
                             </>
                         ) : (
-                            <button
-                                onClick={() => navigate(getPortalRoute())}
-                                className="flex items-center gap-2 px-5 py-2 text-sm font-semibold bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all duration-300"
-                            >
-                                <LayoutDashboard size={16} className="text-indigo-400" />
-                                <span>Go to Portal</span>
+                            <button onClick={() => navigate(getPortalRoute())} className="flex items-center gap-3 bg-dark-secondary px-6 py-2.5 rounded-xl border border-dark-border-primary text-[10px] font-black uppercase tracking-widest hover:bg-dark-tertiary transition-all">
+                                <LayoutDashboard size={14} className="text-dark-accent-indigo" />
+                                <span>Go to Terminal</span>
                             </button>
                         )}
                     </div>
                 </div>
-            </motion.nav>
+            </nav>
 
-            {/* HERO SECTION */}
-            <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 pb-16">
-                <FloatingOrbs />
+            <main>
+                {/* Hero Section */}
+                <section className="relative pt-40 pb-24 px-8 flex flex-col items-center justify-center min-h-[90vh]">
+                    <div className="absolute inset-0 opacity-[0.02] pointer-events-none" 
+                        style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} 
+                    />
+                    
+                    <div className="relative text-center max-w-4xl mx-auto">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-dark-secondary border border-dark-border-primary text-dark-accent-indigo text-[10px] font-black uppercase tracking-[0.2em] mb-10"
+                        >
+                            <Terminal size={12} />
+                            v2.0.4 Unified Evaluation Interface
+                        </motion.div>
 
-                {/* Grid pattern overlay */}
-                <div
-                    className="absolute inset-0 opacity-[0.03]"
-                    style={{
-                        backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
-                        backgroundSize: '40px 40px',
-                    }}
-                />
+                        <motion.h1 
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                            className="text-6xl md:text-8xl font-black tracking-tight mb-8 leading-[0.9] uppercase"
+                        >
+                            Standardizing <br />
+                            <span className="text-dark-text-muted italic">Academic</span> <br />
+                            Evaluation.
+                        </motion.h1>
 
-                <div className="relative z-10 max-w-5xl mx-auto">
-                    {/* Badge */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.85 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5, delay: 0.1 }}
-                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold mb-8"
-                    >
-                        <Sparkles size={12} className="text-indigo-400" />
-                        Academix Intelligence System
-                        <Sparkles size={12} className="text-indigo-400" />
-                    </motion.div>
+                        <motion.p 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-lg md:text-xl text-dark-text-secondary max-w-2xl mx-auto leading-relaxed mb-12 font-medium"
+                        >
+                            The high-integrity evaluation terminal designed for institutions that demand 
+                            absolute precision, security, and real-time intelligence.
+                        </motion.p>
 
-                    {/* Headline */}
-                    <motion.h1
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                        className="text-5xl sm:text-7xl font-black leading-[1.05] tracking-tight mb-6"
-                    >
-                        <span className="bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent">
-                            Assessment.
-                        </span>
-                        <br />
-                        <span className="bg-gradient-to-r from-indigo-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
-                            Reimagined.
-                        </span>
-                    </motion.h1>
-
-                    {/* Sub-headline */}
-                    <motion.p
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                        className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed mb-10"
-                    >
-                        The enterprise-grade Computer-Based Testing platform built for institutions that demand{' '}
-                        <span className="text-white font-semibold">speed</span>,{' '}
-                        <span className="text-white font-semibold">security</span>, and{' '}
-                        <span className="text-white font-semibold">intelligence</span>.
-                    </motion.p>
-
-                    {/* CTA Buttons */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.7, delay: 0.5 }}
-                        className="flex flex-col sm:flex-row items-center justify-center gap-4"
-                    >
-                        {!isAuthenticated ? (
-                            <>
-                                <button
-                                    onClick={() => navigate('/login')}
-                                    className="flex items-center gap-2.5 px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-2xl text-base font-bold transition-all duration-300"
-                                >
-                                    Sign In
-                                </button>
-                                <button
-                                    onClick={() => navigate('/register')}
-                                    className="group flex items-center gap-2.5 px-8 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-2xl text-base font-bold transition-all duration-300 shadow-2xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5"
-                                >
-                                    Sign Up
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+                        >
+                            {!isAuthenticated ? (
+                                <button onClick={() => navigate('/register')} className="group bg-white text-dark-primary px-10 py-5 rounded-2xl flex items-center gap-4 hover:bg-dark-accent-indigo hover:text-white transition-all shadow-2xl active:scale-95 font-black text-[10px] uppercase tracking-widest ring-1 ring-white/10">
+                                    Authorize Access
                                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
-                            </>
-                        ) : (
-                            <button
-                                onClick={() => navigate(getPortalRoute())}
-                                className="group flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-2xl text-lg font-bold transition-all duration-300 shadow-2xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5"
-                            >
-                                <GraduationCap size={24} />
-                                <span>Continue to Dashboard</span>
-                                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                            </button>
-                        )}
-                    </motion.div>
+                            ) : (
+                                <button onClick={() => navigate(getPortalRoute())} className="group bg-white text-dark-primary px-10 py-5 rounded-2xl flex items-center gap-4 hover:bg-dark-accent-indigo hover:text-white transition-all shadow-2xl active:scale-95 font-black text-[10px] uppercase tracking-widest ring-1 ring-white/10">
+                                    <LayoutDashboard size={18} />
+                                    Launch Module Portals
+                                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            )}
+                        </motion.div>
+                    </div>
 
-                    {/* Scroll hint */}
-                    <motion.div
+                    {/* Scroll Hint */}
+                    <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 1.2 }}
-                        className="mt-20 flex flex-col items-center gap-2 text-slate-600"
+                        transition={{ delay: 1 }}
+                        className="mt-32 text-dark-text-muted flex flex-col items-center gap-3 animate-pulse"
                     >
-                        <span className="text-xs tracking-widest uppercase">Explore</span>
-                        <ChevronDown size={18} className="animate-bounce" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">System Overview</span>
+                        <div className="w-px h-12 bg-dark-border-primary" />
                     </motion.div>
-                </div>
-            </section>
+                </section>
 
-            {/* STATS BAR */}
-            <section className="py-16 px-6 border-y border-white/5 bg-white/[0.02]">
-                <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                    {[
-                        { end: 10000, suffix: '+', label: 'Assessments Delivered' },
-                        { end: 99, suffix: '.9%', label: 'Platform Uptime' },
-                        { end: 3, suffix: 'ms', label: 'Avg Grading Time' },
-                        { end: 100, suffix: '%', label: 'Role Enforcement' },
-                    ].map((stat, i) => (
-                        <FadeIn key={i} delay={i * 0.1}>
-                            <p className="text-4xl font-black bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">
-                                <AnimatedCounter end={stat.end} suffix={stat.suffix} />
-                            </p>
-                            <p className="text-sm text-slate-500 mt-1 font-medium">{stat.label}</p>
-                        </FadeIn>
-                    ))}
-                </div>
-            </section>
-
-            {/* FEATURES */}
-            <section id="features" className="py-28 px-6">
-                <div className="max-w-7xl mx-auto">
-                    <FadeIn className="text-center mb-20">
-                        <span className="text-xs font-bold text-indigo-400 uppercase tracking-[0.3em]">Capabilities</span>
-                        <h2 className="text-4xl sm:text-5xl font-black mt-3 mb-4 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent">
-                            Everything you need
-                        </h2>
-                        <p className="text-slate-400 text-lg max-w-xl mx-auto">
-                            Purpose-built for academic institutions — not bolted together from generic tools.
-                        </p>
-                    </FadeIn>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {features.map((feat, i) => (
-                            <FadeIn key={i} delay={i * 0.08}>
-                                <div className={`group relative p-6 rounded-3xl bg-white/[0.03] border border-white/[0.07] hover:border-white/15 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl ${feat.glow}`}>
-                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${feat.gradient} flex items-center justify-center mb-5 shadow-lg`}>
-                                        <feat.icon size={22} className="text-white" />
-                                    </div>
-                                    <h3 className="text-lg font-bold text-white mb-2">{feat.title}</h3>
-                                    <p className="text-sm text-slate-400 leading-relaxed">{feat.description}</p>
+                {/* Intelligence Modules Section */}
+                <section id="architecture" className="py-32 px-8 border-t border-dark-border-primary bg-dark-secondary/10">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+                            <div className="space-y-8">
+                                <div className="space-y-4">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-dark-accent-indigo">Core Architecture</p>
+                                    <h2 className="text-4xl md:text-5xl font-black text-white leading-tight uppercase tracking-tight">Intelligence <span className="text-dark-text-muted">Modules.</span></h2>
+                                    <p className="text-lg text-dark-text-secondary font-medium leading-relaxed max-w-xl">
+                                        We've engineered a tri-core system that prioritizes structural integrity and role-specific data density.
+                                    </p>
                                 </div>
-                            </FadeIn>
-                        ))}
-                    </div>
-                </div>
-            </section>
 
-            {/* HOW IT WORKS */}
-            <section id="how-it-works" className="py-28 px-6 bg-white/[0.02] border-y border-white/5">
-                <div className="max-w-6xl mx-auto">
-                    <FadeIn className="text-center mb-20">
-                        <span className="text-xs font-bold text-blue-400 uppercase tracking-[0.3em]">Process</span>
-                        <h2 className="text-4xl sm:text-5xl font-black mt-3 mg-4 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent">
-                            Four steps to flawless exams
-                        </h2>
-                    </FadeIn>
+                                <div className="grid grid-cols-1 gap-4">
+                                   {[
+                                       { icon: Terminal, title: 'Instructional Node', sub: 'Comprehensive tools for examiners to build, schedule, and grade assessments with surgical precision.' },
+                                       { icon: GraduationCap, title: 'Candidate Node', sub: 'A high-contrast, zero-distraction terminal for students to execute exams with real-time feedback.' },
+                                       { icon: Shield, title: 'Registry Node', sub: 'The administrative command center for system oversight, audit trails, and personnel management.' }
+                                   ].map((item, i) => (
+                                       <div key={i} className="flex gap-6 p-6 bg-dark-secondary border border-dark-border-primary rounded-2xl hover:border-dark-text-muted transition-all group">
+                                           <div className="w-12 h-12 rounded-xl bg-dark-tertiary flex items-center justify-center text-dark-accent-indigo group-hover:bg-dark-accent-indigo group-hover:text-white transition-all shrink-0">
+                                               <item.icon size={20} />
+                                           </div>
+                                           <div className="space-y-1">
+                                               <h3 className="text-[10px] font-black uppercase tracking-widest text-white">{item.title}</h3>
+                                               <p className="text-sm text-dark-text-secondary leading-relaxed">{item.sub}</p>
+                                           </div>
+                                       </div>
+                                   ))}
+                                </div>
+                            </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {steps.map((step, i) => (
-                            <FadeIn key={i} delay={i * 0.1}>
-                                <div className="relative p-6 rounded-3xl bg-gradient-to-b from-white/[0.05] to-transparent border border-white/[0.07] h-full">
-                                    {/* Step number */}
-                                    <div className="text-5xl font-black text-white/5 absolute top-4 right-5 select-none">{step.step}</div>
-                                    <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center mb-5">
-                                        <step.icon size={18} className="text-indigo-400" />
-                                    </div>
-                                    <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
-                                    <p className="text-sm text-slate-400 leading-relaxed">{step.description}</p>
-
-                                    {/* Connector arrow */}
-                                    {i < steps.length - 1 && (
-                                        <div className="hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10">
-                                            <div className="w-6 h-6 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center">
-                                                <ArrowRight size={12} className="text-slate-500" />
+                            <div className="relative">
+                                <div className="aspect-square bg-dark-secondary border border-dark-border-primary rounded-[3rem] p-4 relative overflow-hidden group">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-dark-accent-indigo/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="relative h-full border border-dark-border-primary rounded-[2.5rem] p-10 flex flex-col justify-between">
+                                        <div className="space-y-2">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted">Diagnostic Matrix</p>
+                                            <p className="text-4xl font-black text-white tracking-tighter">100%</p>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-dark-accent-emerald">Integrity Verified</p>
+                                        </div>
+                                        <div className="space-y-6">
+                                            <div className="h-2 w-full bg-dark-tertiary rounded-full overflow-hidden">
+                                                <div className="h-full w-2/3 bg-dark-accent-indigo" />
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="p-4 bg-dark-tertiary rounded-2xl">
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted mb-1">Deployment</p>
+                                                    <p className="text-sm font-bold text-white">READY</p>
+                                                </div>
+                                                <div className="p-4 bg-dark-tertiary rounded-2xl">
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted mb-1">State</p>
+                                                    <p className="text-sm font-bold text-dark-accent-emerald uppercase">Nominal</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    )}
-                                </div>
-                            </FadeIn>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* ROLES SECTION */}
-            <section id="roles" className="py-28 px-6">
-                <div className="max-w-6xl mx-auto">
-                    <FadeIn className="text-center mb-20">
-                        <span className="text-xs font-bold text-violet-400 uppercase tracking-[0.3em]">User Roles</span>
-                        <h2 className="text-4xl sm:text-5xl font-black mt-3 mb-4 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent">
-                            Built for every stakeholder
-                        </h2>
-                    </FadeIn>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {[
-                            {
-                                role: 'Administrator',
-                                icon: Shield,
-                                gradient: 'from-rose-500/20 to-pink-600/5',
-                                border: 'border-rose-500/20',
-                                badge: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
-                                perks: ['User provisioning & role assignment', 'System-wide analytics & health', 'Audit logs & security controls', 'Backup & maintenance tools'],
-                            },
-                            {
-                                role: 'Examiner',
-                                icon: BookOpen,
-                                gradient: 'from-indigo-500/20 to-blue-600/5',
-                                border: 'border-indigo-500/20',
-                                badge: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30',
-                                perks: ['Build rich question banks', 'Schedule & proctor exams', 'Manual grading workspace', 'Distractor & performance analysis'],
-                                featured: true,
-                            },
-                            {
-                                role: 'Student',
-                                icon: GraduationCap,
-                                gradient: 'from-emerald-500/20 to-teal-600/5',
-                                border: 'border-emerald-500/20',
-                                badge: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-                                perks: ['View available exams & schedules', 'Secure, timed exam interface', 'Instant MCQ score feedback', 'Full result history & analytics'],
-                            },
-                        ].map((item, i) => (
-                            <FadeIn key={i} delay={i * 0.12}>
-                                <div className={`relative p-8 rounded-3xl bg-gradient-to-b ${item.gradient} border ${item.border} h-full transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl ${item.featured ? 'ring-1 ring-indigo-500/30' : ''}`}>
-                                    {item.featured && (
-                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-indigo-600 to-blue-600 text-xs font-bold text-white shadow-lg shadow-indigo-500/30">
-                                            Most Used
-                                        </div>
-                                    )}
-                                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold border mb-6 ${item.badge}`}>
-                                        <item.icon size={12} />
-                                        {item.role}
                                     </div>
-                                    <ul className="space-y-3">
-                                        {item.perks.map((perk, j) => (
-                                            <li key={j} className="flex items-start gap-3 text-sm text-slate-300">
-                                                <CheckCircle size={15} className="text-emerald-400 mt-0.5 shrink-0" />
-                                                {perk}
-                                            </li>
-                                        ))}
-                                    </ul>
                                 </div>
-                            </FadeIn>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA BANNER */}
-            <FadeIn>
-                <section className="py-24 px-6 relative overflow-hidden">
-                    <div className="absolute inset-0">
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 via-blue-600/20 to-violet-600/20" />
-                        <div className="absolute inset-0 backdrop-blur-3xl" />
-                    </div>
-                    <div className="relative z-10 max-w-3xl mx-auto text-center">
-                        <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-indigo-500/40">
-                            <TrendingUp size={28} className="text-white" />
+                                <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-dark-accent-indigo/10 blur-[100px] pointer-events-none" />
+                            </div>
                         </div>
-                        <h2 className="text-4xl sm:text-5xl font-black mb-4 bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-                            Ready to modernize your institution?
-                        </h2>
-                        <p className="text-slate-400 text-lg mb-10">
-                            Join thousands of students and educators already using AXIS for smarter, fairer assessments.
-                        </p>
+                    </div>
+                </section>
+
+                {/* Protocols Section */}
+                <section id="protocols" className="py-32 px-8 bg-dark-primary">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="text-center mb-24 space-y-4">
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-dark-accent-indigo">System Protocols</p>
+                            <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-tight">Zero-Friction <span className="text-dark-text-muted italic">Execution.</span></h2>
+                            <p className="text-lg text-dark-text-secondary font-medium max-w-xl mx-auto">
+                                Our interface is stripped of redundancy to ensure maximum operational velocity.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {[
+                                { icon: Activity, label: '01. Diagnostic', title: 'Initialize Profile', sub: 'Fast-track onboarding via institutional secure credentials.' },
+                                { icon: BookOpen, label: '02. Instruction', title: 'Module Deployment', sub: 'Craft comprehensive evaluations with our streamlined editor.' },
+                                { icon: Target, label: '03. Execution', title: 'Controlled Testing', sub: 'High-integrity proctoring with zero-latency response capture.' },
+                                { icon: Database, label: '04. Intelligence', title: 'Automated Insight', sub: 'Instant result distribution and performance analytics.' }
+                            ].map((item, i) => (
+                                <div key={i} className="bg-dark-secondary p-8 rounded-3xl border border-dark-border-primary hover:border-dark-accent-indigo transition-all duration-500 group">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted mb-8 group-hover:text-dark-accent-indigo transition-colors">{item.label}</p>
+                                    <div className="w-12 h-12 bg-dark-tertiary rounded-2xl flex items-center justify-center text-white mb-6">
+                                        <item.icon size={20} />
+                                    </div>
+                                    <h3 className="text-xl font-black text-white mb-4 uppercase tracking-tight">{item.title}</h3>
+                                    <p className="text-sm text-dark-text-secondary leading-relaxed">{item.sub}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Security Section */}
+                <section id="security" className="py-32 px-8 border-t border-dark-border-primary bg-dark-secondary/[0.02]">
+                    <div className="max-w-5xl mx-auto text-center space-y-12">
+                        <div className="space-y-4">
+                            <div className="w-20 h-20 rounded-3xl bg-dark-secondary border border-dark-border-primary flex items-center justify-center mx-auto text-dark-accent-indigo mb-8 shadow-2xl">
+                                <Lock size={32} />
+                            </div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-dark-accent-indigo">Security Protocol</p>
+                            <h2 className="text-4xl md:text-6xl font-black text-white leading-tight uppercase tracking-tight">Enterprise <span className="text-dark-text-muted italic">Integrity.</span></h2>
+                            <p className="text-lg md:text-xl text-dark-text-secondary font-medium leading-relaxed max-w-2xl mx-auto italic">
+                                "The standard for institutions that prioritize evaluation security over aesthetic fluff."
+                            </p>
+                        </div>
+                        
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             {!isAuthenticated ? (
-                                <>
-                                    <button
-                                        onClick={() => navigate('/login')}
-                                        className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-2xl text-base font-bold transition-all duration-300"
-                                    >
-                                        Sign In
-                                    </button>
-                                    <button
-                                        onClick={() => navigate('/register')}
-                                        className="group flex items-center gap-2.5 px-8 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-2xl text-base font-bold transition-all duration-300 shadow-2xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5"
-                                    >
-                                        Sign Up
-                                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                                    </button>
-                                </>
+                                <button onClick={() => navigate('/register')} className="bg-white text-dark-primary px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-dark-accent-indigo hover:text-white transition-all shadow-2xl active:scale-95">
+                                    Secure Registration
+                                </button>
                             ) : (
-                                <button
-                                    onClick={() => navigate(getPortalRoute())}
-                                    className="group flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-2xl text-lg font-bold transition-all duration-300 shadow-2xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5"
-                                >
-                                    <LayoutDashboard size={24} />
-                                    <span>Manage Your Portal</span>
-                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                <button onClick={() => navigate(getPortalRoute())} className="bg-white text-dark-primary px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-dark-accent-indigo hover:text-white transition-all shadow-2xl active:scale-95">
+                                    Return to Secure Terminal
                                 </button>
                             )}
                         </div>
                     </div>
                 </section>
-            </FadeIn>
+            </main>
 
-            {/* FOOTER */}
-            <footer className="py-10 px-6 border-t border-white/5">
-                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600">
-                    <div className="flex items-center gap-2">
+            {/* Footer */}
+            <footer className="py-16 px-8 border-t border-dark-border-primary bg-dark-primary">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
+                    <div className="flex flex-col items-center md:items-start gap-3">
                         <Logo size={28} />
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted italic">Unified Evaluation System</p>
                     </div>
-                    <p>© {new Date().getFullYear()} Academix. All rights reserved.</p>
-                    <div className="flex items-center gap-5">
-                        {!isAuthenticated ? (
-                            <>
-                                <button onClick={() => navigate('/login')} className="hover:text-slate-400 transition-colors">Sign In</button>
-                                <button onClick={() => navigate('/register')} className="hover:text-slate-400 transition-colors">Register</button>
-                            </>
-                        ) : (
-                            <button onClick={() => navigate(getPortalRoute())} className="hover:text-slate-400 transition-colors font-bold text-indigo-400">Back to Dashboard</button>
-                        )}
+                    
+                    <div className="flex items-center gap-12">
+                        <div className="text-right">
+                             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted mb-2">Platform Status</p>
+                             <div className="flex items-center gap-2 justify-end">
+                                <div className="w-1.5 h-1.5 rounded-full bg-dark-accent-emerald animate-pulse" />
+                                <p className="text-[10px] font-black uppercase tracking-widest text-white">Nominal</p>
+                             </div>
+                        </div>
+                        <div className="text-right">
+                             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted mb-2">Build Identifier</p>
+                             <p className="text-[10px] font-black uppercase tracking-widest text-white">AXIS_v2.0.4-RELEASE</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-dark-border-primary/50 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted">© {new Date().getFullYear()} Academix. Licensed Infrastructure.</p>
+                    <div className="flex items-center gap-8">
+                        {['Privacy', 'Legal', 'Security', 'Compliance'].map(item => (
+                            <a key={item} href="#" className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted hover:text-white transition-colors">
+                                {item}
+                            </a>
+                        ))}
                     </div>
                 </div>
             </footer>

@@ -153,9 +153,7 @@ class ExamService {
     is_marked_for_review?: boolean;
   }): Promise<ApiResponse<any>> {
     try {
-      console.log(' Saving answer with data:', data);
       const response = await api.post<any>('/questions/answers/', data);
-      console.log(' Answer saved successfully:', response.data);
       return { success: true, data: response.data };
     } catch (error: any) {
       console.error(' Failed to save answer:', error);
@@ -189,16 +187,9 @@ class ExamService {
 
   async submitExamAttempt(attemptId: number): Promise<ApiResponse<void>> {
     try {
-      console.log(' Submitting exam attempt:', attemptId);
       await api.post(`/exams/attempts/${attemptId}/submit/`);
-      console.log(' Exam submitted successfully');
       return { success: true };
     } catch (error: any) {
-      console.error(' Failed to submit exam:', error);
-      console.error(' Response data:', error.response?.data);
-      console.error(' Response status:', error.response?.status);
-      console.error(' Response detail:', error.response?.data?.detail);
-
       let errorMessage = 'Failed to submit exam';
       if (error.response?.data) {
         if (Array.isArray(error.response.data) && error.response.data.length > 0) {
@@ -238,12 +229,9 @@ class ExamService {
   async getAvailableExams(): Promise<ApiResponse<Exam[]>> {
     try {
       const response = await api.get<any>('/exams/exams/');
-      console.log('API Response:', response.data); // Debug log
       const data = response.data.results !== undefined ? response.data.results : response.data;
-      console.log('Processed data:', data); // Debug log
       return { success: true, data };
     } catch (error: any) {
-      console.error('API Error:', error); // Debug log
       return {
         success: false,
         error: error.response?.data?.detail || 'Failed to fetch available exams',
@@ -253,20 +241,11 @@ class ExamService {
 
   async startExam(examId: number): Promise<ApiResponse<any>> {
     try {
-      console.log(' Starting exam attempt for exam ID:', examId);
       const response = await api.post<any>(`/exams/attempts/`, { exam: examId });
-      console.log(' API Response:', response.data);
       return { success: true, data: response.data };
     } catch (error: any) {
-      console.error(' API Error:', error);
-      console.error(' Response data:', error.response?.data);
-      console.error(' Response status:', error.response?.status);
-      console.error(' Response detail:', error.response?.data?.detail);
-
-      // Try to get more detailed error information
       let errorMessage = 'Failed to start exam';
       if (error.response?.data) {
-        // Handle array of errors (like ['Maximum attempts reached for this exam'])
         if (Array.isArray(error.response.data) && error.response.data.length > 0) {
           errorMessage = error.response.data[0];
         } else if (error.response.data.detail) {

@@ -18,7 +18,7 @@ interface Question {
     id: number;
     text: string;
     options: Option[];
-    question_type: 'multiple_choice' | 'true_false' | 'short_answer';
+    question_type: 'mcq' | 'true_false' | 'short_answer';
     marks: number;
 }
 
@@ -104,7 +104,7 @@ const ExamInterface: React.FC = () => {
         setAnswers(prev => ({ ...prev, [questionId]: answer }));
 
         const question = examData?.questions.find(q => q.id === questionId);
-        const isObjective = question?.question_type === 'multiple_choice' || question?.question_type === 'true_false';
+        const isObjective = question?.question_type === 'mcq' || question?.question_type === 'true_false';
 
         // Save progress silently using correct payload shape
         examService.saveAnswer({

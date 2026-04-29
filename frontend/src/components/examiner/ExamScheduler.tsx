@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, Users, Eye, Edit, Trash2, Plus, Save, X, Check, AlertCircle } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Users, Eye, Edit, Trash2, Plus, Save, X, Check, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import LoadingScreen from '../common/LoadingScreen';
 import examService from '../../services/examService';
 import { toast } from 'react-toastify';
@@ -38,6 +38,56 @@ const ExamScheduler: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<'exams' | 'schedule'>('exams');
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  // Helper functions for calendar
+  const generateCalendarDays = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDay = firstDay.getDay();
+    const totalDays = lastDay.getDate();
+    
+    const days = [];
+    
+    // Add days from previous month
+    const prevMonthLastDay = new Date(year, month, 0).getDate();
+    for (let i = startDay - 1; i >= 0; i--) {
+      days.push({
+        date: new Date(year, month - 1, prevMonthLastDay - i),
+        isCurrentMonth: false
+      });
+    }
+    
+    // Add days from current month
+    for (let i = 1; i <= totalDays; i++) {
+      days.push({
+        date: new Date(year, month, i),
+        isCurrentMonth: true
+      });
+    }
+    
+    // Add days from next month
+    const remainingDays = 42 - days.length;
+    for (let i = 1; i <= remainingDays; i++) {
+      days.push({
+        date: new Date(year, month + 1, i),
+        isCurrentMonth: false
+      });
+    }
+    
+    return days;
+  };
+
+  const getExamsForDate = (date: Date, examList: Exam[]) => {
+    const dateStr = date.toDateString();
+    return examList.filter(exam => {
+      const examDate = new Date(exam.startDate);
+      return examDate.toDateString() === dateStr;
+    });
+  };
+
   // Form state
   const [formData, setFormData] = useState({
     title: '',
@@ -302,7 +352,7 @@ const ExamScheduler: React.FC = () => {
               <p className="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">{exams.length}</p>
             </div>
             <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-500/20 rounded-lg flex items-center justify-center">
-              <Calendar size={24} className="text-indigo-600 dark:text-indigo-400" />
+              <CalendarIcon size={24} className="text-indigo-600 dark:text-indigo-400" />
             </div>
           </div>
         </div>
@@ -476,10 +526,85 @@ const ExamScheduler: React.FC = () => {
           )}
 
           {activeTab === 'schedule' && (
-            <div className="text-center py-12">
-              <Calendar size={48} className="mx-auto text-gray-400 dark:text-gray-500 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-dark-text-primary mb-2">Calendar View</h3>
-              <p className="text-gray-500 dark:text-gray-400">Interactive calendar view coming soon</p>
+            <div className="bg-white dark:bg-dark-surface rounded-lg shadow-sm border border-gray-200 dark:border-dark-border-primary p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text-primary">Exam Schedule</h3>
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={() => {
+                      const newMonth = new Date(currentMonth);
+                      newMonth.setMonth(newMonth.getMonth() - 1);
+                      setCurrentMonth(newMonth);
+                    }}
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-dark-secondary rounded-lg transition-colors"
+                  >
+                    <ChevronLeft size={20} className="text-gray-600 dark:text-gray-400" />
+                  </button>
+                  <span className="text-lg font-medium text-gray-900 dark:text-dark-text-primary">
+                    {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  </span>
+                  <button
+                    onClick={() => {
+                      const newMonth = new Date(currentMonth);
+                      newMonth.setMonth(newMonth.getMonth() + 1);
+                      setCurrentMonth(newMonth);
+                    }}
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-dark-secondary rounded-lg transition-colors"
+                  >
+                    <ChevronRight size={20} className="text-gray-600 dark:text-gray-400" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-7 gap-2 mb-2">
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                  <div key={day} className="text-center text-sm font-medium text-gray-500 dark:text-gray-400 py-2">
+                    {day}
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-7 gap-2">
+                {generateCalendarDays(currentMonth).map((day, index) => {
+                  const dayExams = getExamsForDate(day.date, exams);
+                  const isToday = day.date.toDateString() === new Date().toDateString();
+                  
+                  return (
+                    <div
+                      key={index}
+                      className={`min-h-24 p-2 rounded-lg border ${
+                        isToday 
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10' 
+                          : 'border-gray-200 dark:border-dark-border-primary bg-gray-50 dark:bg-dark-secondary'
+                      } ${!day.isCurrentMonth ? 'opacity-50' : ''}`}
+                    >
+                      <div className={`text-sm font-medium mb-1 ${
+                        isToday ? 'text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-dark-text-primary'
+                      }`}>
+                        {day.date.getDate()}
+                      </div>
+                      {dayExams.length > 0 && (
+                        <div className="space-y-1">
+                          {dayExams.slice(0, 2).map(exam => (
+                            <div
+                              key={exam.id}
+                              className="text-xs p-1 rounded bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300 truncate"
+                              title={exam.title}
+                            >
+                              {exam.title}
+                            </div>
+                          ))}
+                          {dayExams.length > 2 && (
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              +{dayExams.length - 2} more
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>
@@ -487,27 +612,25 @@ const ExamScheduler: React.FC = () => {
 
       {/* Create/Edit Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-dark-surface rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 dark:border-dark-border-primary">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-dark-text-primary">
-                  {editingExam ? 'Edit Exam' : 'Create New Exam'}
-                </h3>
-                <button
-                  onClick={() => {
-                    setShowCreateModal(false);
-                    setEditingExam(null);
-                    resetForm();
-                  }}
-                  className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-                >
-                  <X size={24} />
-                </button>
-              </div>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-gray-200 dark:border-dark-border-primary flex justify-between items-center bg-gray-50/50 dark:bg-dark-surface">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-dark-text-primary">
+                {editingExam ? 'Edit Exam' : 'Create New Exam'}
+              </h3>
+              <button
+                onClick={() => {
+                  setShowCreateModal(false);
+                  setEditingExam(null);
+                  resetForm();
+                }}
+                className="w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-full transition-all"
+              >
+                <X size={20} />
+              </button>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 overflow-y-auto flex-1">
               {/* Basic Information */}
               <div>
                 <h4 className="text-lg font-medium text-gray-900 dark:text-dark-text-primary mb-4">Basic Information</h4>

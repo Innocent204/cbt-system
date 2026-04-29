@@ -37,7 +37,7 @@ const Modal: React.FC<ModalProps> = ({
             {isOpen && (
                 <div className="fixed inset-0 z-50 overflow-y-auto">
                     <div 
-                        className="flex min-h-screen items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+                        className="flex min-h-screen items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
                         onClick={handleBackdropClick}
                     >
                         <motion.div
@@ -45,21 +45,21 @@ const Modal: React.FC<ModalProps> = ({
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-                            className={`relative w-full ${sizeClasses[size]} bg-white rounded-lg shadow-xl`}
+                            className={`relative w-full ${sizeClasses[size]} bg-white dark:bg-dark-surface rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]`}
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Header */}
                             {(title || showCloseButton) && (
-                                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                                <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-dark-border-primary bg-gray-50/50 dark:bg-dark-surface">
                                     {title && (
-                                        <h2 className="text-xl font-semibold text-gray-900">
+                                        <h2 className="text-xl font-semibold text-gray-900 dark:text-dark-text-primary">
                                             {title}
                                         </h2>
                                     )}
                                     {showCloseButton && (
                                         <button
                                             onClick={onClose}
-                                            className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded"
+                                            className="w-10 h-10 flex items-center justify-center bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-full transition-all"
                                         >
                                             <X className="h-5 w-5" />
                                         </button>
@@ -68,7 +68,7 @@ const Modal: React.FC<ModalProps> = ({
                             )}
 
                             {/* Content */}
-                            <div className="p-6">
+                            <div className="p-6 overflow-y-auto flex-1">
                                 {children}
                             </div>
                         </motion.div>

@@ -76,7 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, userRole, userName 
 
   const handleLogout = async () => {
     await authService.logout();
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   const getAdminMenuItems = (): MenuItem[] => [
@@ -198,200 +198,186 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, userRole, userName 
     }
   ];
 
-  const getMenuItems = (): MenuItem[] => {
+  const getMenuItems = () => {
     switch (userRole) {
-      case 'admin': return getAdminMenuItems();
-      case 'examiner': return getExaminerMenuItems();
-      case 'student': return getStudentMenuItems();
-      default: return getStudentMenuItems();
+      case 'admin':
+        return [
+          {
+            category: 'OVERVIEW',
+            items: [
+              { title: 'Dashboard', icon: LayoutDashboard, onClick: () => navigate('/admin'), color: 'text-dark-accent-indigo' },
+            ]
+          },
+          {
+            category: 'MANAGEMENT',
+            items: [
+              { title: 'User Management', icon: Users, onClick: () => navigate('/admin/users'), color: 'text-dark-accent-rose', badge: (stats as AdminStats)?.users_badge },
+              { title: 'Courses & Exams', icon: BookOpen, onClick: () => navigate('/admin/courses'), color: 'text-dark-accent-emerald', badge: (stats as AdminStats)?.courses_badge },
+              { title: 'Results Management', icon: Award, onClick: () => navigate('/admin/results'), color: 'text-dark-accent-amber' },
+            ]
+          },
+          {
+            category: 'SYSTEM',
+            items: [
+              { title: 'Analytics Reports', icon: BarChart3, onClick: () => navigate('/admin/reports'), color: 'text-dark-accent-cyan' },
+              { title: 'Maintenance', icon: Settings, onClick: () => navigate('/admin/maintenance'), color: 'text-dark-text-secondary' },
+            ]
+          }
+        ];
+      case 'examiner':
+        return [
+          {
+            category: 'OVERVIEW',
+            items: [
+              { title: 'Dashboard', icon: LayoutDashboard, onClick: () => navigate('/examiner'), color: 'text-dark-accent-indigo' },
+            ]
+          },
+          {
+            category: 'EXAM SYSTEM',
+            items: [
+              { title: 'Question Bank', icon: Edit3, onClick: () => navigate('/examiner/questions'), color: 'text-dark-accent-rose', badge: (stats as ExaminerStats)?.questions_badge },
+              { title: 'Create Exam', icon: FileText, onClick: () => navigate('/examiner/create-exam'), color: 'text-dark-accent-emerald' },
+              { title: 'Manual Grading', icon: UserCheck, onClick: () => navigate('/examiner/grading'), color: 'text-dark-accent-amber' },
+            ]
+          },
+          {
+            category: 'REPORTS',
+            items: [
+              { title: 'Exam Results', icon: BarChart3, onClick: () => navigate('/examiner/results'), color: 'text-dark-accent-cyan', badge: (stats as ExaminerStats)?.results_badge },
+            ]
+          }
+        ];
+      default:
+        return [
+          {
+            category: 'MAIN',
+            items: [
+              { title: 'Dashboard', icon: LayoutDashboard, onClick: () => navigate('/student'), color: 'text-dark-accent-indigo' },
+              { title: 'My Exams', icon: FileText, onClick: () => navigate('/student/exams'), color: 'text-dark-accent-emerald', badge: (stats as StudentStats)?.exams_badge },
+              { title: 'Exam Results', icon: Award, onClick: () => navigate('/student/results'), color: 'text-dark-accent-amber' },
+            ]
+          }
+        ];
     }
   };
 
-  const menuItems = getMenuItems();
+  const menuSections = getMenuItems();
 
-  const isActiveRoute = (item: MenuItem) => {
-    const itemPath = item.onClick.toString().match(/navigate\('([^']+)'\)/)?.[1];
-    return itemPath && activePath.startsWith(itemPath);
+  const isActiveRoute = (path: string) => {
+    return activePath === path || (path !== '/admin' && path !== '/examiner' && path !== '/student' && activePath.startsWith(path));
   };
 
   return (
-    <div className={`relative h-full bg-dark-primary border-r border-dark-border-primary transition-all duration-300 ${isOpen ? 'w-72' : 'w-0 lg:w-16'} min-h-screen shadow-xl flex-shrink-0 overflow-hidden`}>
-      <div className="relative h-full flex flex-col">
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200/60 dark:border-dark-border-primary flex-shrink-0">
-          <div className="flex items-center justify-between">
-            {/* Mobile Menu Toggle */}
-            <button
-              onClick={onToggle}
-              className="lg:hidden p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-surface hover:bg-opacity-80 transition-all duration-200 group flex-shrink-0"
-            >
-              {isOpen ? (
-                <X size={20} className="text-gray-600 dark:text-dark-text-tertiary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary transition-colors" />
-              ) : (
-                <Menu size={20} className="text-gray-600 dark:text-dark-text-tertiary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary transition-colors" />
-              )}
-            </button>
+    <div className={`relative h-full bg-dark-secondary border-r border-dark-border-primary transition-all duration-300 ${isOpen ? 'w-64' : 'w-0 lg:w-20'} min-h-screen flex-shrink-0 flex flex-col overflow-hidden`}>
+      {/* Decorative gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-dark-accent-indigo/5 to-transparent pointer-events-none" />
 
-            {/* Logo Section */}
-            {isOpen && (
-              <div className="flex items-center">
-                <Logo
-                  size={42}
-                  showText={true}
-                  className="transition-all duration-300"
-                />
-              </div>
-            )}
-
-            {/* Desktop Toggle Button - Hidden on mobile */}
-            <button
-              onClick={onToggle}
-              className="hidden lg:block p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-surface hover:bg-opacity-80 transition-all duration-200 group flex-shrink-0"
-            >
-              {isOpen ? (
-                <X size={20} className="text-gray-600 dark:text-dark-text-tertiary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary transition-colors" />
-              ) : (
-                <Menu size={20} className="text-gray-600 dark:text-dark-text-tertiary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary transition-colors" />
-              )}
-            </button>
-          </div>
+      {/* Logo Section */}
+      <div className="p-6 flex items-center justify-between relative z-10">
+        <div className={`transition-all duration-500 transform ${isOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-0 lg:opacity-100 lg:scale-100'}`}>
+          <Logo size={isOpen ? 38 : 32} showText={isOpen} />
         </div>
+        <button
+          onClick={onToggle}
+          className="p-2 rounded-lg hover:bg-dark-tertiary transition-colors text-dark-text-muted hover:text-dark-text-primary"
+        >
+          {isOpen ? <X size={18} /> : <Menu size={18} />}
+        </button>
+      </div>
 
-        {/* User Profile Section - Only show when sidebar is open */}
-        {isOpen && (
-          <div className="p-6 border-b border-dark-border-primary flex-shrink-0">
-            <div className="bg-gradient-to-r from-dark-secondary to-dark-tertiary rounded-2xl p-4 border border-dark-border-primary">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">
-                  {userName.charAt(0).toUpperCase()}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-gray-900 dark:text-dark-text-primary truncate">{userName}</p>
-                  <p className="text-sm text-gray-600 dark:text-dark-text-secondary capitalize">{userRole}</p>
-                </div>
-                <ChevronRight size={16} className="text-gray-400 dark:text-dark-text-muted" />
-              </div>
-            </div>
-          </div>
-        )}
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-4 space-y-8 overflow-y-auto relative z-10 custom-scrollbar">
+        {menuSections.map((section, idx) => (
+          <div key={idx} className="space-y-2">
+            {isOpen && (
+              <h3 className="px-4 text-[10px] font-black uppercase tracking-widest text-dark-text-muted opacity-50">
+                {section.category}
+              </h3>
+            )}
+            <div className="space-y-1">
+              {section.items.map((item, itemIdx) => {
+                const itemPath = item.onClick.toString().match(/navigate\('([^']+)'\)/)?.[1] || '';
+                const active = isActiveRoute(itemPath);
+                const Icon = item.icon;
 
-        {/* Navigation - Only show when sidebar is open */}
-        {isOpen && (
-          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-            {menuItems.map((item, index) => {
-              const isActive = isActiveRoute(item);
-              const Icon = item.icon;
+                return (
+                  <button
+                    key={itemIdx}
+                    onClick={item.onClick}
+                    className={`
+                      w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
+                      ${active 
+                        ? 'bg-dark-tertiary text-dark-text-primary' 
+                        : 'text-dark-text-secondary hover:text-dark-text-primary hover:bg-dark-tertiary/50'}
+                    `}
+                  >
+                    {active && (
+                      <motion.div
+                        layoutId="active-pill"
+                        className="absolute left-0 w-1 h-6 bg-dark-accent-indigo rounded-r-full"
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                    
+                    <div className={`transition-transform duration-200 group-hover:scale-110 ${active ? item.color : 'text-dark-text-muted group-hover:text-dark-text-primary'}`}>
+                      <Icon size={20} strokeWidth={active ? 2.5 : 2} />
+                    </div>
 
-              return (
-                <button
-                  key={index}
-                  onClick={item.onClick}
-                  className={`group relative w-full flex items-center space-x-4 p-4 rounded-[1.25rem] transition-all duration-500 ${isActive
-                    ? 'bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/20 shadow-lg shadow-blue-500/5'
-                    : 'hover:bg-slate-100 dark:hover:bg-slate-800/40 border border-transparent'
-                    }`}
-                >
-                  {/* Active indicator */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="sidebar-active"
-                      className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-10 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-r-full shadow-[0_0_15px_rgba(59,130,246,0.5)]"
-                    />
-                  )}
+                    {isOpen && (
+                      <span className={`flex-1 text-left text-sm font-semibold tracking-tight ${active ? 'text-dark-text-primary' : 'text-dark-text-secondary'}`}>
+                        {item.title}
+                      </span>
+                    )}
 
-                  {/* Icon */}
-                  <div className={`relative flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${isActive
-                    ? `bg-gradient-to-br ${item.gradient} text-white shadow-lg`
-                    : 'bg-gray-100 dark:bg-dark-surface text-gray-600 dark:text-dark-text-tertiary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary'
-                    }`}>
-                    <Icon size={18} />
-                    {item.badge !== undefined && item.badge !== null && item.badge !== 0 && item.badge !== '0' && (
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-dark-primary">
+                    {item.badge !== undefined && item.badge !== null && item.badge !== 0 && (
+                      <span className={`
+                        px-1.5 py-0.5 rounded-md text-[10px] font-black
+                        ${active ? 'bg-dark-accent-indigo text-white' : 'bg-dark-tertiary text-dark-text-muted'}
+                      `}>
                         {item.badge}
                       </span>
                     )}
-                  </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </nav>
 
-                  {/* Content */}
-                  <div className="flex-1 text-left">
-                    <div className={`font-semibold text-sm ${isActive ? 'text-gray-900 dark:text-dark-text-primary' : 'text-gray-700 dark:text-dark-text-secondary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary'}`}>
-                      {item.title}
-                    </div>
-                    {item.description && (
-                      <div className="text-xs text-gray-500 dark:text-dark-text-muted mt-0.5">{item.description}</div>
-                    )}
-                  </div>
-
-                  {/* Arrow indicator */}
-                  {isActive && (
-                    <ChevronRight size={16} className="text-blue-600 dark:text-dark-accent-blue" />
-                  )}
-                </button>
-              );
-            })}
-          </nav>
-        )}
-
-        {/* Bottom Section - Only show when sidebar is open */}
-        {isOpen && (
-          <div className="p-4 border-t border-gray-200/60 dark:border-dark-border-primary space-y-2 flex-shrink-0">
-            {/* Settings, Notifications & Help */}
-            <div className="grid grid-cols-3 gap-2 mb-4">
-              {/* Settings — shown for examiner/student in dock; admin uses My Profile nav item */}
-              {userRole !== 'admin' && (
-                <button
-                  onClick={() => {
-                    const settingsPath = userRole === 'examiner' ? '/examiner/settings' : '/student/settings';
-                    navigate(settingsPath);
-                  }}
-                  className="flex flex-col items-center justify-center p-3 rounded-xl bg-dark-surface hover:bg-dark-surfaceHover transition-colors group border border-dark-border-primary"
-                >
-                  <Settings size={16} className="text-gray-600 dark:text-dark-text-tertiary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary mb-1" />
-                  <span className="text-xs text-gray-700 dark:text-dark-text-secondary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary text-center">Settings</span>
-                </button>
-              )}
-              <button
-                onClick={() => {
-                  const notificationsPath = userRole === 'admin' ? '/admin/notifications' :
-                    userRole === 'examiner' ? '/examiner/notifications' :
-                      '/student/notifications';
-                  navigate(notificationsPath);
-                }}
-                className="flex flex-col items-center justify-center p-3 rounded-xl bg-gray-50 dark:bg-dark-surface hover:bg-gray-100 dark:hover:bg-dark-surfaceHover transition-colors group border border-transparent dark:border-dark-border-primary relative"
-              >
-                <Bell size={16} className="text-gray-600 dark:text-dark-text-tertiary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary mb-1" />
-                <span className="text-xs text-gray-700 dark:text-dark-text-secondary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary text-center">Notifications</span>
-                {stats?.unread_notifications !== undefined && stats.unread_notifications > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-dark-primary">
-                    {stats.unread_notifications}
-                  </span>
-                )}
-              </button>
-              <button
-                onClick={() => {
-                  const helpPath = userRole === 'admin' ? '/admin/help' :
-                    userRole === 'examiner' ? '/examiner/help' :
-                      '/student/help';
-                  navigate(helpPath);
-                }}
-                className="flex flex-col items-center justify-center p-3 rounded-xl bg-gray-50 dark:bg-dark-surface hover:bg-gray-100 dark:hover:bg-dark-surfaceHover transition-colors group border border-transparent dark:border-dark-border-primary"
-              >
-                <HelpCircle size={16} className="text-gray-600 dark:text-dark-text-tertiary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary mb-1" />
-                <span className="text-xs text-gray-700 dark:text-dark-text-secondary group-hover:text-gray-900 dark:group-hover:text-dark-text-primary text-center">Help</span>
-              </button>
+      {/* Bottom Profile / Logout Section */}
+      <div className="p-4 border-t border-dark-border-primary relative z-10 bg-dark-secondary">
+        {isOpen ? (
+          <div className="space-y-3">
+            <div 
+              onClick={() => navigate(`/${userRole}/settings`)}
+              className="flex items-center gap-3 p-3 rounded-2xl bg-dark-tertiary/30 hover:bg-dark-tertiary transition-all cursor-pointer group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-dark-accent-indigo to-dark-accent-cyan flex items-center justify-center text-white font-black shadow-lg shadow-indigo-500/10">
+                {userName.charAt(0).toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-dark-text-primary truncate">{userName}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted group-hover:text-dark-accent-indigo transition-colors">{userRole}</p>
+              </div>
+              <ChevronRight size={14} className="text-dark-text-muted group-hover:translate-x-1 transition-transform" />
             </div>
 
-            {/* Logout Button */}
             <button
               onClick={handleLogout}
-              className="w-full flex items-center space-x-4 p-3.5 rounded-2xl bg-gradient-to-r from-red-50 to-pink-50 dark:from-dark-error/10 dark:to-dark-error/5 hover:from-red-100 hover:to-pink-100 dark:hover:from-dark-error/15 dark:hover:to-dark-error/10 border border-red-200/60 dark:border-dark-error/30 transition-all duration-200 group"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-dark-text-muted hover:text-dark-accent-rose hover:bg-dark-accent-rose/5 transition-all group"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-pink-600 dark:from-dark-error dark:to-red-600 flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow">
-                <LogOut size={18} />
-              </div>
-              <span className="font-semibold text-red-700 dark:text-dark-error group-hover:text-red-800 dark:group-hover:text-dark-error">Logout</span>
+              <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
+              <span className="text-sm font-bold">Sign Out</span>
             </button>
           </div>
+        ) : (
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center p-3 text-dark-text-muted hover:text-dark-accent-rose transition-colors"
+          >
+            <LogOut size={20} />
+          </button>
         )}
       </div>
     </div>

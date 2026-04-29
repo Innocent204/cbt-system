@@ -153,6 +153,51 @@ const QuestionBankManagement: React.FC = () => {
     );
   };
 
+  const handleDuplicateSelected = () => {
+    toast.info('Duplicate functionality coming soon');
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedQuestions.length === 0) return;
+    
+    toast(
+      ({ closeToast }) => (
+        <div>
+          <p className="mb-4 text-sm font-medium text-slate-800 dark:text-slate-200">
+            Are you sure you want to delete {selectedQuestions.length} selected question{selectedQuestions.length > 1 ? 's' : ''}?
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              className="px-3 py-1.5 text-xs font-semibold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
+              onClick={closeToast}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-3 py-1.5 text-xs font-semibold bg-rose-600 text-white rounded-lg hover:bg-rose-500 transition-colors shadow-lg shadow-rose-600/20 active:scale-95"
+              onClick={async () => {
+                if (closeToast) closeToast();
+                // Delete selected questions
+                for (const questionId of selectedQuestions) {
+                  const response = await questionService.deleteQuestion(questionId);
+                  if (!response.success) {
+                    toast.error(`Failed to delete question ${questionId}`);
+                  }
+                }
+                toast.success(`${selectedQuestions.length} question(s) deleted successfully`);
+                setSelectedQuestions([]);
+                fetchQuestions();
+              }}
+            >
+              Confirm Delete
+            </button>
+          </div>
+        </div>
+      ),
+      { autoClose: false, closeOnClick: false, draggable: false, closeButton: false }
+    );
+  };
+
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'easy': return 'bg-green-100 text-green-800';
@@ -368,10 +413,16 @@ const QuestionBankManagement: React.FC = () => {
                     {selectedQuestions.length} question{selectedQuestions.length > 1 ? 's' : ''} selected
                   </span>
                   <div className="flex space-x-2">
-                    <button className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 text-sm font-medium transition-colors">
+                    <button
+                      onClick={() => handleDuplicateSelected()}
+                      className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 text-sm font-medium transition-colors"
+                    >
                       Duplicate
                     </button>
-                    <button className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm font-medium transition-colors">
+                    <button
+                      onClick={() => handleDeleteSelected()}
+                      className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm font-medium transition-colors"
+                    >
                       Delete
                     </button>
                   </div>
@@ -550,7 +601,14 @@ const QuestionBankManagement: React.FC = () => {
                   </div>
 
                   <div className="mt-6 pt-4 border-t border-gray-100 dark:border-dark-border-primary flex space-x-2">
-                    <button className="flex-1 bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-all active:scale-95 shadow-sm">
+                    <button
+                      onClick={() => {
+                        setActiveTab('questions');
+                        setSearchTerm(bank.name);
+                        toast.info(`Showing questions from "${bank.name}"`);
+                      }}
+                      className="flex-1 bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-all active:scale-95 shadow-sm"
+                    >
                       View Questions
                     </button>
                   </div>
