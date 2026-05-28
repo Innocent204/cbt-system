@@ -75,7 +75,7 @@ const StudentExams: React.FC = () => {
     };
 
     if (loading) {
-        return <LoadingScreen fullScreen={false} message="Retrieving your exam history..." transparent />;
+        return <LoadingScreen fullScreen={false} message="Loading your exams..." transparent />;
     }
 
     const completedExams = attempts.filter(a => a.status === 'completed').length;

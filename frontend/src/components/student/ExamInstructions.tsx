@@ -78,7 +78,7 @@ const ExamInstructions: React.FC = () => {
                         className="h-full bg-indigo-600"
                     />
                 </div>
-                <p className="text-slate-500 font-black uppercase text-[10px] tracking-widest mt-4">Preparing Assessment Assets...</p>
+                <p className="text-slate-500 font-black uppercase text-[10px] tracking-widest mt-4">Loading exam...</p>
             </div>
         );
     }
@@ -97,12 +97,12 @@ const ExamInstructions: React.FC = () => {
                     className="group flex items-center gap-2 text-slate-500 hover:text-indigo-600 transition-colors font-black uppercase text-[10px] tracking-widest mb-6"
                 >
                     <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-                    Back to Terminal
+                    Back to Dashboard
                 </button>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
                     {exam.title}
                 </h1>
-                <p className="text-slate-500 font-medium mt-2 max-w-2xl">{exam.description || 'Professional academic assessment of your core competencies.'}</p>
+                <p className="text-slate-500 font-medium mt-2 max-w-2xl">{exam.description || 'Please read the instructions carefully before starting.'}</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 px-4">
@@ -120,7 +120,7 @@ const ExamInstructions: React.FC = () => {
                                 "Read each question carefully before responding.",
                                 "You can navigate between questions using the navigation bar.",
                                 "All answers are automatically saved to our secure server.",
-                                "Do not refresh the page or close the browser during the session."
+                                "Do not refresh the page or close the browser during the exam."
                             ]).map((instruction, idx) => (
                                 <li key={idx} className="flex gap-4">
                                     <div className="h-6 w-6 mt-0.5 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
@@ -141,7 +141,7 @@ const ExamInstructions: React.FC = () => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {(exam.rules && exam.rules.length > 0 ? exam.rules : [
-                                "Zero tolerance for plagiarism or unauthorized materials.",
+                                "No cheating or unauthorized materials permitted.",
                                 "Mobile phones and smart devices must be powered off.",
                                 "Multiple browser tabs detected will result in instant disqualification.",
                                 "No talking or external communication permitted."
@@ -186,7 +186,7 @@ const ExamInstructions: React.FC = () => {
                                     <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-400">
                                         <CheckCircle2 size={24} />
                                     </div>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-relaxed tracking-widest">Secure session ready.</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-relaxed tracking-widest">Ready to start.</p>
                                 </div>
                             </div>
                         </div>
@@ -218,13 +218,13 @@ const ExamInstructions: React.FC = () => {
                                 }`}
                         >
                             <Play size={18} fill="currentColor" />
-                            Initiate session
+                            Start exam
                         </button>
                     </div>
 
                     <div className="bg-amber-500/10 border border-amber-500/20 p-6 rounded-[2rem] flex gap-4">
                         <Info size={24} className="text-amber-500 shrink-0" />
-                        <p className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest leading-relaxed">Ensure a stable connection before initiation.</p>
+                        <p className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest leading-relaxed">Ensure a stable internet connection before starting.</p>
                     </div>
                 </div>
             </div>

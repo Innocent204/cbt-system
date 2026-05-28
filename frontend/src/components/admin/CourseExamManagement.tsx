@@ -320,17 +320,17 @@ const CourseExamManagement: React.FC = () => {
       {/* Header - Redesigned */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-dark-border-primary pb-10">
         <div className="space-y-3">
-          <p className="text-[10px] font-black uppercase tracking-widest text-dark-accent-indigo">Instructional Orchestration</p>
-          <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">Curriculum <span className="text-dark-text-muted">Hub</span></h2>
+          <p className="text-[10px] font-black uppercase tracking-widest text-dark-accent-indigo">Course & Exam Management</p>
+          <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">Courses & <span className="text-dark-text-muted">Exams</span></h2>
           <p className="text-dark-text-secondary font-medium text-lg max-w-2xl leading-relaxed">
-            Coordinate curricula, examinations, and proctor assignments through our unified terminal.
+            Create and manage courses, build exams, and organize your testing content.
           </p>
         </div>
         <button
           onClick={() => activeTab === 'courses' ? openCourseModal() : openExamModal()}
           className="bg-white text-dark-primary px-8 py-4 rounded-2xl flex items-center gap-3 hover:bg-dark-accent-indigo hover:text-white transition-all shadow-2xl active:scale-95 font-black text-[10px] uppercase tracking-widest border border-white/10 group">
           <Plus size={18} className="group-hover:rotate-90 transition-transform duration-300" />
-          <span>Initialize {activeTab === 'courses' ? 'Course' : 'Exam'}</span>
+          <span>Add {activeTab === 'courses' ? 'New Course' : 'New Exam'}</span>
         </button>
       </div>
 
@@ -443,7 +443,7 @@ const CourseExamManagement: React.FC = () => {
                       <p className="text-sm font-black text-white truncate italic">{course.created_by_name}</p>
                     </div>
                     <div className="bg-dark-tertiary/20 rounded-2xl p-4 border border-dark-border-primary">
-                      <p className="text-[10px] text-dark-text-muted font-black uppercase tracking-widest mb-1">Execution Nodes</p>
+                      <p className="text-[10px] text-dark-text-muted font-black uppercase tracking-widest mb-1">Exams</p>
                       <p className="text-2xl font-black text-white leading-none">{course.exam_count}</p>
                     </div>
                   </div>
@@ -460,7 +460,7 @@ const CourseExamManagement: React.FC = () => {
                         onClick={() => handleToggleCourseStatus(course.id)}
                         className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${course.is_active ? 'bg-dark-accent-rose/10 text-dark-accent-rose border-dark-accent-rose/20 hover:bg-dark-accent-rose hover:text-white' : 'bg-dark-accent-emerald/10 text-dark-accent-emerald border-dark-accent-emerald/20 hover:bg-dark-accent-emerald hover:text-white'}`}
                       >
-                        {course.is_active ? 'Deactivate' : 'Initialize'}
+                        {course.is_active ? 'Deactivate' : 'Activate'}
                       </button>
                       <button onClick={() => handleDeleteCourse(course.id)} className="p-2.5 bg-dark-accent-rose/5 text-dark-text-muted hover:text-white hover:bg-dark-accent-rose rounded-xl transition-all border border-dark-border-primary">
                         <Trash2 size={16} />
@@ -482,7 +482,7 @@ const CourseExamManagement: React.FC = () => {
                         </div>
                         <h3 className="text-2xl font-black text-white tracking-tight group-hover:text-dark-accent-indigo transition-colors">{exam.title}</h3>
                         <div className={`px-3 py-1 text-[9px] font-black uppercase tracking-tighter rounded border ${exam.status === 'published' ? 'bg-dark-accent-emerald/10 text-dark-accent-emerald border-dark-accent-emerald/20' : 'bg-dark-accent-amber/10 text-dark-accent-amber border-dark-accent-amber/20'}`}>
-                          {exam.status === 'published' ? 'Deployed' : 'Draft Protocol'}
+                          {exam.status === 'published' ? 'Published' : 'Draft'}
                         </div>
                       </div>
 
@@ -490,7 +490,7 @@ const CourseExamManagement: React.FC = () => {
                         {[
                           { icon: Clock, label: 'Duration', value: `${exam.duration_minutes}m` },
                           { icon: BarChart3, label: 'Total Weight', value: exam.total_marks },
-                          { icon: BookOpen, label: 'Nodes/Queries', value: exam.question_count },
+                          { icon: BookOpen, label: 'Questions', value: exam.question_count },
                           { icon: TrendingUp, label: 'Pass Threshold', value: exam.passing_marks },
                         ].map((stat, i) => (
                           <div key={i} className="flex items-center gap-4">
@@ -520,7 +520,7 @@ const CourseExamManagement: React.FC = () => {
                         onClick={() => handleToggleExamStatus(exam.id)}
                         className={`px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border flex items-center gap-3 shadow-xl ${exam.status === 'published' ? 'bg-dark-accent-amber/10 text-dark-accent-amber border-dark-accent-amber/20 hover:bg-dark-accent-amber hover:text-white' : 'bg-dark-accent-emerald/10 text-dark-accent-emerald border-dark-accent-emerald/20 hover:bg-dark-accent-emerald hover:text-white'}`}
                       >
-                        {exam.status === 'published' ? 'Revoke Deployment' : 'Authorize Deployed'}
+                        {exam.status === 'published' ? 'Unpublish' : 'Publish Exam'}
                       </button>
                       <button onClick={() => handleDeleteExam(exam.id)} className="p-4 bg-dark-accent-rose/5 text-dark-text-muted hover:text-white hover:bg-dark-accent-rose rounded-2xl transition-all border border-dark-border-primary shadow-xl">
                         <Trash2 size={20} />

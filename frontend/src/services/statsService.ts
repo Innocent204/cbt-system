@@ -34,7 +34,7 @@ export interface StudentStats {
     examsCompleted: number;
     averageScore: number;
     upcomingExams: number;
-    activeLearningTime: string;
+    availableExams?: number;
     // Sidebar Badges
     unread_notifications?: number;
     exams_badge?: number;

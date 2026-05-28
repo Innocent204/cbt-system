@@ -5,4 +5,4 @@ mysqlclient==2.2.0
 django-cors-headers==4.3.0
 python-dotenv==1.0.0
 Pillow==10.1.0
-django-filter==23.3
+django-filter>=24.2

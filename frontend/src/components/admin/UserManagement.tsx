@@ -90,11 +90,14 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  const handleDeleteUser = (userId: number) => {
+  const handleDeleteUser = (userId: number, username: string) => {
     toast(
       ({ closeToast }) => (
         <div>
-          <p className="mb-4 text-sm font-medium text-slate-800 dark:text-slate-200">Are you sure you want to delete this user?</p>
+          <p className="mb-2 text-sm font-bold text-rose-600 dark:text-rose-400">Permanently Delete User?</p>
+          <p className="mb-4 text-xs text-slate-600 dark:text-slate-400">
+            This will permanently delete <strong>{username}</strong> and all their data. This action cannot be undone.
+          </p>
           <div className="flex justify-end gap-2">
             <button
               className="px-3 py-1.5 text-xs font-semibold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
@@ -106,16 +109,16 @@ const UserManagement: React.FC = () => {
               className="px-3 py-1.5 text-xs font-semibold bg-rose-600 text-white rounded-lg hover:bg-rose-500 transition-colors shadow-lg shadow-rose-600/20 active:scale-95"
               onClick={async () => {
                 if (closeToast) closeToast();
-                const response = await userService.deleteUser(userId);
+                const response = await userService.hardDeleteUser(userId);
                 if (response.success) {
                   setUsers(prev => prev.filter(user => user.id !== userId));
-                  toast.success('User deleted successfully');
+                  toast.success('User permanently deleted');
                 } else {
-                  toast.error('Failed to delete user');
+                  toast.error(response.error || 'Failed to delete user');
                 }
               }}
             >
-              Confirm Delete
+              Delete Permanently
             </button>
           </div>
         </div>
@@ -200,10 +203,10 @@ const UserManagement: React.FC = () => {
       <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-10 border-b border-dark-border-primary pb-12 bg-dark-secondary p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-dark-accent-indigo/5 blur-[120px] pointer-events-none" />
         <div className="space-y-6 relative z-10">
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-dark-accent-indigo">Access Orchestration</p>
-          <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight">Personnel <span className="text-dark-text-muted italic">Terminal</span></h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-dark-accent-indigo">User Management</p>
+          <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight">Manage <span className="text-dark-text-muted italic">Users</span></h2>
           <p className="text-dark-text-secondary font-medium text-lg max-w-2xl leading-relaxed">
-            Coordinate system access permissions and monitor user role distribution globally.
+            Create, edit, and manage user accounts. Control access permissions and monitor user activity.
           </p>
         </div>
         <button
@@ -211,17 +214,17 @@ const UserManagement: React.FC = () => {
           className="bg-white text-dark-primary px-10 py-5 rounded-2xl flex items-center justify-center gap-4 hover:bg-dark-accent-indigo hover:text-white transition-all shadow-2xl active:scale-95 font-black text-[10px] uppercase tracking-[0.2em] border border-white/10 group relative z-10 w-full xl:w-auto"
         >
           <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-          <span>Authorize Member</span>
+          <span>Add New User</span>
         </button>
       </div>
 
       {/* Modern Stats Overview - Redesigned */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Network Entities', value: users.length, icon: Users, color: 'text-dark-accent-indigo' },
-          { label: 'Verified Online', value: users.filter(u => u.is_active).length, icon: UserCheck, color: 'text-dark-accent-emerald' },
-          { label: 'Access Revoked', value: users.filter(u => !u.is_active).length, icon: UserX, color: 'text-dark-accent-rose' },
-          { label: 'Faculty Nodes', value: users.filter(u => u.role === 'examiner').length, icon: Edit2, color: 'text-dark-accent-cyan' },
+          { label: 'Total Users', value: users.length, icon: Users, color: 'text-dark-accent-indigo' },
+          { label: 'Active Users', value: users.filter(u => u.is_active).length, icon: UserCheck, color: 'text-dark-accent-emerald' },
+          { label: 'Inactive Users', value: users.filter(u => !u.is_active).length, icon: UserX, color: 'text-dark-accent-rose' },
+          { label: 'Examiners', value: users.filter(u => u.role === 'examiner').length, icon: Edit2, color: 'text-dark-accent-cyan' },
         ].map((stat, i) => (
           <div key={i} className="bg-dark-secondary p-8 rounded-3xl border border-dark-border-primary hover:border-dark-text-muted transition-all duration-300 group shadow-lg">
             <div className="flex items-start justify-between mb-6">
@@ -242,7 +245,7 @@ const UserManagement: React.FC = () => {
           <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-dark-text-muted group-focus-within:text-dark-accent-indigo transition-colors" />
           <input
             type="text"
-            placeholder="Query by identifier, email, or credentials..."
+            placeholder="Search by username, email, or name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-16 pr-8 py-5 bg-dark-tertiary/30 border border-dark-border-primary rounded-2xl focus:ring-1 focus:ring-dark-accent-indigo focus:border-dark-accent-indigo outline-none transition-all placeholder:text-dark-text-muted font-black text-[10px] uppercase tracking-[0.2em] text-white"
@@ -257,10 +260,10 @@ const UserManagement: React.FC = () => {
               onChange={(e) => setRoleFilter(e.target.value)}
               className="w-full lg:w-72 pl-16 pr-12 py-5 bg-dark-secondary border border-dark-border-primary rounded-xl focus:ring-1 focus:ring-dark-accent-indigo outline-none font-black text-[10px] uppercase tracking-[0.2em] text-white appearance-none cursor-pointer shadow-xl"
             >
-              <option value="all">Permission: All Channels</option>
-              <option value="admin">Admin Protocol</option>
-              <option value="examiner">Faculty Node</option>
-              <option value="student">Student Link</option>
+              <option value="all">All Roles</option>
+              <option value="admin">Admin</option>
+              <option value="examiner">Examiner</option>
+              <option value="student">Student</option>
             </select>
           </div>
         </div>
@@ -272,11 +275,11 @@ const UserManagement: React.FC = () => {
           <table className="w-full text-left">
             <thead>
               <tr className="bg-dark-tertiary/50">
-                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-dark-text-muted">Entity / Identifier</th>
-                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-dark-text-muted">Clearance Level</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-dark-text-muted">User</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-dark-text-muted">Role</th>
                 <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-dark-text-muted">Status</th>
-                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-dark-text-muted">Activity Matrix</th>
-                <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-dark-text-muted">Operations</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-dark-text-muted">Last Active</th>
+                <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-dark-text-muted">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-dark-border-primary/30">
@@ -315,14 +318,14 @@ const UserManagement: React.FC = () => {
                     </td>
                     <td className="px-8 py-6 whitespace-nowrap">
                       <p className={`text-[10px] font-black uppercase tracking-widest ${user.is_active ? 'text-dark-accent-emerald' : 'text-dark-accent-rose opacity-50'}`}>
-                        {user.is_active ? 'Nominal' : 'Access Restricted'}
+                        {user.is_active ? 'Active' : 'Inactive'}
                       </p>
                     </td>
                     <td className="px-8 py-6 whitespace-nowrap">
                        <p className="text-[10px] font-black text-white uppercase tracking-widest italic leading-none">
-                         {user.last_login ? `Active ${new Date(user.last_login).toLocaleDateString()}` : 'No Audit Recorded'}
+                         {user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never logged in'}
                        </p>
-                       <p className="text-[9px] text-dark-text-muted font-black uppercase tracking-[0.2em] mt-2 opacity-50">Member Since {user.created_at ? new Date(user.created_at).getFullYear() : '2024'}</p>
+                       <p className="text-[9px] text-dark-text-muted font-black uppercase tracking-[0.2em] mt-2 opacity-50">Joined {user.created_at ? new Date(user.created_at).getFullYear() : '2024'}</p>
                     </td>
                     <td className="px-8 py-6 whitespace-nowrap">
                       <div className="flex items-center justify-end gap-2">
@@ -339,7 +342,7 @@ const UserManagement: React.FC = () => {
                           {user.is_active ? <UserX size={16} /> : <UserCheck size={16} />}
                         </button>
                         <button
-                          onClick={() => handleDeleteUser(user.id)}
+                          onClick={() => handleDeleteUser(user.id, user.username)}
                           className="p-2.5 bg-dark-accent-rose/5 text-dark-text-muted hover:text-white hover:bg-dark-accent-rose rounded-xl transition-all border border-dark-border-primary"
                         >
                           <Trash2 size={16} />
@@ -357,12 +360,16 @@ const UserManagement: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => { setIsModalOpen(false); setEditingUser(null); }}
-        title={editingUser ? 'Update Profile' : 'Register Member'}
+        title={editingUser ? 'Edit User' : 'Add New User'}
+        size="lg"
       >
-        <UserForm
-          onSubmit={editingUser ? handleEditUser : handleAddUser}
-          initialData={editingUser || undefined}
-        />
+        <div className="bg-dark-secondary rounded-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-dark-accent-indigo/5 blur-[80px] pointer-events-none" />
+          <UserForm
+            onSubmit={editingUser ? handleEditUser : handleAddUser}
+            initialData={editingUser || undefined}
+          />
+        </div>
       </Modal>
     </motion.div >
   );

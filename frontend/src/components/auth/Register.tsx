@@ -81,9 +81,9 @@ const Register: React.FC = () => {
                             <Logo size={48} />
                         </motion.div>
                         <h1 className="text-3xl font-black text-white mb-2 tracking-tight uppercase">
-                            Initialize <span className="text-dark-text-muted">Account</span>
+                            Create <span className="text-dark-text-muted">Account</span>
                         </h1>
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-accent-indigo">Registration Protocol</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-accent-indigo">Sign up to get started</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -213,7 +213,7 @@ const Register: React.FC = () => {
                                 <Loader2 className="animate-spin" size={20} />
                             ) : (
                                 <>
-                                    <span>Authorize Access</span>
+                                    <span>Create Account</span>
                                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </>
                             )}
@@ -221,7 +221,7 @@ const Register: React.FC = () => {
                     </form>
 
                     <p className="mt-10 text-center text-[10px] font-black uppercase tracking-widest text-dark-text-muted">
-                        Already have access?{' '}
+                        Already have an account?{' '}
                         <Link to="/login" className="text-white hover:text-dark-accent-indigo transition-colors border-b border-white/20 pb-0.5">
                             Sign in
                         </Link>

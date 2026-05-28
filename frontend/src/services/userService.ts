@@ -57,7 +57,7 @@ class UserService {
         }
     }
 
-    // Delete user
+    // Delete user (soft delete - marks as inactive)
     async deleteUser(id: number): Promise<ApiResponse<void>> {
         try {
             await api.delete(`/accounts/users/${id}/`);
@@ -66,6 +66,19 @@ class UserService {
             return {
                 success: false,
                 error: error.response?.data || 'Failed to delete user',
+            };
+        }
+    }
+
+    // Hard delete user (permanent deletion - admin only)
+    async hardDeleteUser(id: number): Promise<ApiResponse<void>> {
+        try {
+            await api.delete(`/accounts/users/${id}/hard_delete/`);
+            return { success: true };
+        } catch (error: any) {
+            return {
+                success: false,
+                error: error.response?.data?.error || 'Failed to permanently delete user',
             };
         }
     }

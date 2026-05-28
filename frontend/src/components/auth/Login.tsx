@@ -98,18 +98,18 @@ const Login: React.FC = () => {
               <Logo size={64} showText={false} />
             </motion.div>
             <h1 className="text-4xl font-black text-white mb-2 tracking-tight uppercase">
-              Identity <span className="text-dark-text-muted">Portal</span>
+              Sign <span className="text-dark-text-muted">In</span>
             </h1>
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-accent-indigo flex items-center justify-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-dark-accent-indigo animate-pulse" />
-              Secure Authentication Required
+              Sign in to your account
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-3">
               <label htmlFor="username" className="block text-[10px] font-black uppercase tracking-widest text-dark-text-muted ml-1">
-                Registry ID
+                Username
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-dark-accent-indigo">
@@ -121,7 +121,7 @@ const Login: React.FC = () => {
                   name="username"
                   value={credentials.username}
                   onChange={handleChange}
-                  placeholder="admin_doe"
+                  placeholder="Enter your username"
                   disabled={loading}
                   autoFocus
                   className="w-full pl-14 pr-6 py-5 bg-dark-tertiary border border-dark-border-primary rounded-2xl text-white placeholder:text-dark-text-muted focus:outline-none focus:ring-2 focus:ring-dark-accent-indigo/20 focus:border-dark-accent-indigo transition-all duration-300 font-black text-[10px] uppercase tracking-widest"
@@ -131,7 +131,7 @@ const Login: React.FC = () => {
 
             <div className="space-y-3">
               <label htmlFor="password" className="block text-[10px] font-black uppercase tracking-widest text-dark-text-muted ml-1">
-                Access Secret
+                Password
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-dark-accent-indigo">
@@ -179,7 +179,7 @@ const Login: React.FC = () => {
                     exit={{ opacity: 0 }}
                     className="flex items-center gap-2"
                   >
-                    <span>Authorize Portal Access</span>
+                    <span>Sign In</span>
                     <Zap size={18} className="group-hover:text-amber-400 transition-colors" />
                   </motion.div>
                 )}
@@ -188,9 +188,9 @@ const Login: React.FC = () => {
           </form>
 
           <p className="mt-10 text-center text-[10px] font-black uppercase tracking-widest text-dark-text-muted">
-            New personnel member?{' '}
+            Don't have an account?{' '}
             <Link to="/register" className="text-white hover:text-dark-accent-indigo transition-colors border-b border-white/20 pb-0.5">
-              Sign up
+              Create Account
             </Link>
           </p>
         </div>

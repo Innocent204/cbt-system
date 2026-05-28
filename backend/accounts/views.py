@@ -318,7 +318,7 @@ class DashboardStatsView(viewsets.GenericViewSet):
             'examsCompleted': completed,
             'averageScore': round(float(avg_score), 1),
             'upcomingExams': upcoming,
-            'activeLearningTime': '12h 30m',
+            'availableExams': available_exams,
             # Sidebar Badges
             'unread_notifications': Notification.objects.filter(recipient=user, is_read=False).count(),
             'exams_badge': available_exams,
@@ -382,7 +382,33 @@ class UserViewSet(viewsets.ModelViewSet):
             self.request.user, 'delete', f'Deactivated user: {instance.username}',
             self.request, 'User', instance.id
         )
-    
+
+    @action(detail=True, methods=['delete'], permission_classes=[IsAdminUser])
+    def hard_delete(self, request, pk=None):
+        """Permanently delete user and all related data"""
+        user = self.get_object()
+        username = user.username
+
+        try:
+            # Log before deletion
+            create_audit_log(
+                request.user, 'delete', f'Permanently deleted user: {username}',
+                request, 'User', user.id
+            )
+
+            # Actually delete the user (cascade will handle related records)
+            user.delete()
+
+            return Response(
+                {'message': f'User {username} permanently deleted'},
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Failed to delete user: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def change_password(self, request):
         """Change user password"""

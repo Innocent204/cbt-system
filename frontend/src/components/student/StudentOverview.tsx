@@ -70,7 +70,10 @@ const StudentOverview: React.FC = () => {
         return <LoadingScreen fullScreen={false} message="Preparing your dashboard..." transparent />;
     }
 
-    const availableExamsCount = exams.filter(e => e.is_available).length;
+    // Use available count from exams array, or fallback to stats if array is empty
+    const availableExamsCount = exams.length > 0
+        ? exams.filter(e => e.is_available).length
+        : (stats?.availableExams || 0);
 
     return (
         <motion.div
@@ -86,14 +89,14 @@ const StudentOverview: React.FC = () => {
                 <div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-12">
                     <div className="space-y-6">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-dark-tertiary border border-dark-border-primary text-[10px] font-black uppercase tracking-widest text-dark-accent-indigo">
-                            <Sparkles size={12} className="animate-pulse" /> Cognitive Portal
+                            <Sparkles size={12} className="animate-pulse" /> Student Portal
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white leading-[1.1]">
-                            Status: <span className="text-dark-accent-indigo">Ready</span>. <br />
-                            Begin your <span className="text-dark-text-muted italic">Ascent</span>.
+                            Ready to <span className="text-dark-accent-indigo">Learn</span>. <br />
+                            Take your <span className="text-dark-text-muted italic">Exams</span>.
                         </h1>
                         <p className="max-w-xl text-dark-text-secondary font-medium text-lg leading-relaxed">
-                            System diagnostics complete. <span className="text-white font-bold">{availableExamsCount} examinations</span> are currently active in your deployment queue.
+                            You have <span className="text-white font-bold">{availableExamsCount} exam{availableExamsCount !== 1 ? 's' : ''}</span> available to take right now.
                         </p>
                     </div>
 
@@ -113,10 +116,10 @@ const StudentOverview: React.FC = () => {
             {/* Quick Stats Grid - Redesigned */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { icon: FileText, label: 'Available', value: exams.length, color: 'text-dark-accent-indigo' },
+                    { icon: FileText, label: 'Available Now', value: availableExamsCount, color: 'text-dark-accent-indigo' },
                     { icon: CheckCircle, label: 'Completed', value: stats?.examsCompleted || '0', color: 'text-dark-accent-emerald' },
                     { icon: BarChart3, label: 'Avg Score', value: stats?.averageScore ? `${stats.averageScore}%` : '---', color: 'text-dark-accent-cyan' },
-                    { icon: Clock, label: 'Pending', value: stats?.upcomingExams || '0', color: 'text-dark-accent-amber' },
+                    { icon: Clock, label: 'Upcoming', value: stats?.upcomingExams || '0', color: 'text-dark-accent-amber' },
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
@@ -141,8 +144,8 @@ const StudentOverview: React.FC = () => {
             <div className="space-y-8">
                 <div className="flex items-end justify-between border-b border-dark-border-primary pb-4">
                     <div className="space-y-1">
-                        <h2 className="text-2xl font-black tracking-tight text-white">Active Assessments</h2>
-                        <p className="text-xs text-dark-text-muted font-black uppercase tracking-widest">Protocol: Select module for initialization</p>
+                        <h2 className="text-2xl font-black tracking-tight text-white">Available Exams</h2>
+                        <p className="text-xs text-dark-text-muted font-black uppercase tracking-widest">Select an exam to start</p>
                     </div>
                 </div>
 
@@ -154,10 +157,10 @@ const StudentOverview: React.FC = () => {
                         <div className="w-16 h-16 rounded-full bg-dark-tertiary flex items-center justify-center text-dark-text-muted mb-6 opacity-50">
                             <AlertCircle size={32} />
                         </div>
-                        <h3 className="text-xl font-black text-white mb-2 tracking-tight">Zero Active Assignments</h3>
-                        <p className="text-dark-text-muted max-w-xs mx-auto mb-8 text-sm font-medium">System reports no current examinations assigned to your identifier.</p>
+                        <h3 className="text-xl font-black text-white mb-2 tracking-tight">No Exams Available</h3>
+                        <p className="text-dark-text-muted max-w-xs mx-auto mb-8 text-sm font-medium">There are no exams available for you right now. Check back later!</p>
                         <button onClick={() => window.location.reload()} className="px-8 py-3 bg-white text-dark-primary rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-dark-accent-indigo hover:text-white transition-all">
-                            Resync Terminal
+                            Refresh
                         </button>
                     </motion.div>
                 ) : (
@@ -177,7 +180,7 @@ const StudentOverview: React.FC = () => {
                                             <div className="flex items-center gap-2 bg-dark-tertiary/50 px-3 py-1.5 rounded-full border border-dark-border-primary">
                                                 <div className={`w-1.5 h-1.5 rounded-full ${exam.is_available ? 'bg-dark-accent-emerald shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse' : 'bg-dark-text-muted'}`} />
                                                 <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${exam.is_available ? 'text-dark-accent-emerald' : 'text-dark-text-muted'}`}>
-                                                    {exam.is_available ? 'Live Sync' : 'Static'}
+                                                    {exam.is_available ? 'Available' : 'Not Available'}
                                                 </span>
                                             </div>
                                             <div className="w-10 h-10 rounded-xl bg-dark-tertiary flex items-center justify-center text-dark-text-muted opacity-0 group-hover:opacity-100 group-hover:text-dark-accent-indigo transition-all transform translate-x-4 group-hover:translate-x-0 border border-dark-border-primary shadow-inner">
@@ -215,12 +218,12 @@ const StudentOverview: React.FC = () => {
                                             {exam.is_available ? (
                                                 <>
                                                     <Play size={14} className="fill-current group-hover/btn:scale-125 transition-transform" />
-                                                    Initialize Assessment
+                                                    Start Exam
                                                 </>
                                             ) : (
                                                 <>
                                                     <AlertCircle size={14} />
-                                                    Pending Authorization
+                                                    Not Available
                                                 </>
                                             )}
                                         </button>

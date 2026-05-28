@@ -97,10 +97,10 @@ const AdminOverview: React.FC = () => {
     ];
 
     const quickActions = [
-        { label: 'User Directory', desc: 'Management protocols', icon: UserPlus, color: 'text-dark-accent-indigo', path: '/admin/users' },
-        { label: 'Exam Systems', desc: 'Content architecture', icon: BookOpen, color: 'text-dark-accent-emerald', path: '/admin/courses' },
-        { label: 'Intelligence', desc: 'System analytics', icon: BarChart3, color: 'text-dark-accent-cyan', path: '/admin/reports' },
-        { label: 'Maintenance', desc: 'Root settings', icon: Settings, color: 'text-dark-text-muted', path: '/admin/maintenance' },
+        { label: 'User Management', desc: 'Manage users & roles', icon: UserPlus, color: 'text-dark-accent-indigo', path: '/admin/users' },
+        { label: 'Courses & Exams', desc: 'Create & manage content', icon: BookOpen, color: 'text-dark-accent-emerald', path: '/admin/courses' },
+        { label: 'Reports', desc: 'View analytics', icon: BarChart3, color: 'text-dark-accent-cyan', path: '/admin/reports' },
+        { label: 'Maintenance', desc: 'System settings', icon: Settings, color: 'text-dark-text-muted', path: '/admin/maintenance' },
     ];
 
 
@@ -141,7 +141,7 @@ const AdminOverview: React.FC = () => {
                             <p className="text-2xl font-black text-white tabular-nums">{maintenance?.performance?.cpu ?? 0}%</p>
                         </div>
                         <div className="px-6 py-5 rounded-2xl bg-dark-accent-indigo/10 border border-dark-accent-indigo/20 backdrop-blur-sm shadow-inner">
-                            <p className="text-[10px] font-black uppercase tracking-widest text-dark-accent-indigo mb-1">Active Nodes</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-dark-accent-indigo mb-1">Total Users</p>
                             <p className="text-2xl font-black text-white tabular-nums">{stats?.totalUsers ?? '---'}</p>
                         </div>
                     </div>
@@ -180,13 +180,13 @@ const AdminOverview: React.FC = () => {
                 >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
                         <div>
-                            <h3 className="text-xl font-black text-white tracking-tight leading-none">Execution Metrics</h3>
-                            <p className="text-[10px] text-dark-text-muted font-black uppercase tracking-[0.2em] mt-3">Protocol: Data Archiving</p>
+                            <h3 className="text-xl font-black text-white tracking-tight leading-none">User Growth</h3>
+                            <p className="text-[10px] text-dark-text-muted font-black uppercase tracking-[0.2em] mt-3">Registration trends</p>
                         </div>
                         <div className="flex items-center gap-6">
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-dark-accent-indigo shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted">Nodes</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted">Students</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-dark-accent-cyan shadow-[0_0_8px_rgba(6,182,212,0.5)]" />
@@ -227,7 +227,7 @@ const AdminOverview: React.FC = () => {
                     className="bg-dark-secondary rounded-3xl p-6 md:p-8 border border-dark-border-primary flex flex-col shadow-xl"
                 >
                     <div className="flex items-center justify-between mb-10">
-                        <h3 className="text-xl font-black text-white tracking-tight leading-none">Node Health</h3>
+                        <h3 className="text-xl font-black text-white tracking-tight leading-none">System Health</h3>
                         <Activity size={18} className="text-dark-accent-emerald animate-pulse" />
                     </div>
                     <div className="space-y-8 flex-1">
@@ -257,8 +257,8 @@ const AdminOverview: React.FC = () => {
                             <ShieldCheck size={18} className="text-dark-accent-emerald" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-dark-accent-emerald uppercase tracking-[0.2em]">Efficiency Protocol</p>
-                            <p className="text-[9px] font-bold text-dark-accent-emerald/60 uppercase tracking-widest mt-0.5">Systems Nominal</p>
+                            <p className="text-[10px] font-black text-dark-accent-emerald uppercase tracking-[0.2em]">System Status</p>
+                            <p className="text-[9px] font-bold text-dark-accent-emerald/60 uppercase tracking-widest mt-0.5">All Systems Operational</p>
                         </div>
                     </div>
                 </motion.div>
@@ -266,7 +266,7 @@ const AdminOverview: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <motion.div variants={itemVariants} className="bg-dark-secondary rounded-3xl p-6 md:p-8 border border-dark-border-primary ring-1 ring-white/5 shadow-xl">
-                    <h3 className="text-xl font-black text-white mb-8 tracking-tight uppercase tracking-[0.2em] text-[10px] opacity-40">Priority Protocols</h3>
+                    <h3 className="text-xl font-black text-white mb-8 tracking-tight uppercase tracking-[0.2em] text-[10px] opacity-40">Quick Actions</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {quickActions.map((action, i) => (
                             <button

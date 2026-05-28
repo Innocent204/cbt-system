@@ -41,7 +41,7 @@ const LandingPage: React.FC = () => {
                     <Logo size={32} />
                     
                     <div className="hidden md:flex items-center gap-10">
-                        {['Architecture', 'Protocols', 'Security'].map(item => (
+                        {['Features', 'How It Works', 'Security'].map(item => (
                             <a key={item} href={`#${item.toLowerCase()}`} className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted hover:text-white transition-colors">
                                 {item}
                             </a>
@@ -55,13 +55,13 @@ const LandingPage: React.FC = () => {
                                     Sign In
                                 </button>
                                 <button onClick={() => navigate('/register')} className="bg-white text-dark-primary px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-dark-accent-indigo hover:text-white transition-all">
-                                    Initialize
+                                    Get Started
                                 </button>
                             </>
                         ) : (
                             <button onClick={() => navigate(getPortalRoute())} className="flex items-center gap-3 bg-dark-secondary px-6 py-2.5 rounded-xl border border-dark-border-primary text-[10px] font-black uppercase tracking-widest hover:bg-dark-tertiary transition-all">
                                 <LayoutDashboard size={14} className="text-dark-accent-indigo" />
-                                <span>Go to Terminal</span>
+                                <span>Go to Dashboard</span>
                             </button>
                         )}
                     </div>
@@ -102,8 +102,8 @@ const LandingPage: React.FC = () => {
                             transition={{ delay: 0.2 }}
                             className="text-lg md:text-xl text-dark-text-secondary max-w-2xl mx-auto leading-relaxed mb-12 font-medium"
                         >
-                            The high-integrity evaluation terminal designed for institutions that demand 
-                            absolute precision, security, and real-time intelligence.
+                            A comprehensive exam management platform designed for institutions that demand 
+                            security, reliability, and detailed analytics.
                         </motion.p>
 
                         <motion.div 
@@ -114,13 +114,13 @@ const LandingPage: React.FC = () => {
                         >
                             {!isAuthenticated ? (
                                 <button onClick={() => navigate('/register')} className="group bg-white text-dark-primary px-10 py-5 rounded-2xl flex items-center gap-4 hover:bg-dark-accent-indigo hover:text-white transition-all shadow-2xl active:scale-95 font-black text-[10px] uppercase tracking-widest ring-1 ring-white/10">
-                                    Authorize Access
+                                    Get Started
                                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
                             ) : (
                                 <button onClick={() => navigate(getPortalRoute())} className="group bg-white text-dark-primary px-10 py-5 rounded-2xl flex items-center gap-4 hover:bg-dark-accent-indigo hover:text-white transition-all shadow-2xl active:scale-95 font-black text-[10px] uppercase tracking-widest ring-1 ring-white/10">
                                     <LayoutDashboard size={18} />
-                                    Launch Module Portals
+                                    Go to Dashboard
                                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
                             )}
@@ -134,7 +134,7 @@ const LandingPage: React.FC = () => {
                         transition={{ delay: 1 }}
                         className="mt-32 text-dark-text-muted flex flex-col items-center gap-3 animate-pulse"
                     >
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">System Overview</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Learn More</span>
                         <div className="w-px h-12 bg-dark-border-primary" />
                     </motion.div>
                 </section>
@@ -145,18 +145,18 @@ const LandingPage: React.FC = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
                             <div className="space-y-8">
                                 <div className="space-y-4">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-dark-accent-indigo">Core Architecture</p>
-                                    <h2 className="text-4xl md:text-5xl font-black text-white leading-tight uppercase tracking-tight">Intelligence <span className="text-dark-text-muted">Modules.</span></h2>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-dark-accent-indigo">Built for Everyone</p>
+                                    <h2 className="text-4xl md:text-5xl font-black text-white leading-tight uppercase tracking-tight">Three Powerful <span className="text-dark-text-muted">Roles.</span></h2>
                                     <p className="text-lg text-dark-text-secondary font-medium leading-relaxed max-w-xl">
-                                        We've engineered a tri-core system that prioritizes structural integrity and role-specific data density.
+                                        A complete platform with dedicated tools for administrators, examiners, and students.
                                     </p>
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-4">
                                    {[
-                                       { icon: Terminal, title: 'Instructional Node', sub: 'Comprehensive tools for examiners to build, schedule, and grade assessments with surgical precision.' },
-                                       { icon: GraduationCap, title: 'Candidate Node', sub: 'A high-contrast, zero-distraction terminal for students to execute exams with real-time feedback.' },
-                                       { icon: Shield, title: 'Registry Node', sub: 'The administrative command center for system oversight, audit trails, and personnel management.' }
+                                       { icon: Terminal, title: 'For Examiners', sub: 'Create exams, manage questions, grade submissions, and track student performance with powerful analytics.' },
+                                       { icon: GraduationCap, title: 'For Students', sub: 'Take exams in a secure, focused environment with real-time feedback and instant results.' },
+                                       { icon: Shield, title: 'For Admins', sub: 'Manage users, monitor system activity, review audit logs, and configure platform settings.' }
                                    ].map((item, i) => (
                                        <div key={i} className="flex gap-6 p-6 bg-dark-secondary border border-dark-border-primary rounded-2xl hover:border-dark-text-muted transition-all group">
                                            <div className="w-12 h-12 rounded-xl bg-dark-tertiary flex items-center justify-center text-dark-accent-indigo group-hover:bg-dark-accent-indigo group-hover:text-white transition-all shrink-0">
@@ -176,9 +176,9 @@ const LandingPage: React.FC = () => {
                                     <div className="absolute inset-0 bg-gradient-to-br from-dark-accent-indigo/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                     <div className="relative h-full border border-dark-border-primary rounded-[2.5rem] p-10 flex flex-col justify-between">
                                         <div className="space-y-2">
-                                            <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted">Diagnostic Matrix</p>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted">System Status</p>
                                             <p className="text-4xl font-black text-white tracking-tighter">100%</p>
-                                            <p className="text-[10px] font-black uppercase tracking-widest text-dark-accent-emerald">Integrity Verified</p>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-dark-accent-emerald">Ready</p>
                                         </div>
                                         <div className="space-y-6">
                                             <div className="h-2 w-full bg-dark-tertiary rounded-full overflow-hidden">
@@ -186,12 +186,12 @@ const LandingPage: React.FC = () => {
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="p-4 bg-dark-tertiary rounded-2xl">
-                                                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted mb-1">Deployment</p>
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted mb-1">Status</p>
                                                     <p className="text-sm font-bold text-white">READY</p>
                                                 </div>
                                                 <div className="p-4 bg-dark-tertiary rounded-2xl">
-                                                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted mb-1">State</p>
-                                                    <p className="text-sm font-bold text-dark-accent-emerald uppercase">Nominal</p>
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted mb-1">Health</p>
+                                                    <p className="text-sm font-bold text-dark-accent-emerald uppercase">Excellent</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -207,19 +207,19 @@ const LandingPage: React.FC = () => {
                 <section id="protocols" className="py-32 px-8 bg-dark-primary">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-24 space-y-4">
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-dark-accent-indigo">System Protocols</p>
-                            <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-tight">Zero-Friction <span className="text-dark-text-muted italic">Execution.</span></h2>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-dark-accent-indigo">How It Works</p>
+                            <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight leading-tight">Simple. Fast. <span className="text-dark-text-muted italic">Effective.</span></h2>
                             <p className="text-lg text-dark-text-secondary font-medium max-w-xl mx-auto">
-                                Our interface is stripped of redundancy to ensure maximum operational velocity.
+                                A streamlined workflow designed to make exam management effortless.
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {[
-                                { icon: Activity, label: '01. Diagnostic', title: 'Initialize Profile', sub: 'Fast-track onboarding via institutional secure credentials.' },
-                                { icon: BookOpen, label: '02. Instruction', title: 'Module Deployment', sub: 'Craft comprehensive evaluations with our streamlined editor.' },
-                                { icon: Target, label: '03. Execution', title: 'Controlled Testing', sub: 'High-integrity proctoring with zero-latency response capture.' },
-                                { icon: Database, label: '04. Intelligence', title: 'Automated Insight', sub: 'Instant result distribution and performance analytics.' }
+                                { icon: Activity, label: 'Step 1', title: 'Create Account', sub: 'Quick and secure onboarding for your institution.' },
+                                { icon: BookOpen, label: 'Step 2', title: 'Build Exams', sub: 'Create comprehensive tests with our intuitive exam editor.' },
+                                { icon: Target, label: 'Step 3', title: 'Conduct Testing', sub: 'Secure proctoring with real-time monitoring and auto-save.' },
+                                { icon: Database, label: 'Step 4', title: 'Get Results', sub: 'Automatic grading with detailed analytics and insights.' }
                             ].map((item, i) => (
                                 <div key={i} className="bg-dark-secondary p-8 rounded-3xl border border-dark-border-primary hover:border-dark-accent-indigo transition-all duration-500 group">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted mb-8 group-hover:text-dark-accent-indigo transition-colors">{item.label}</p>
@@ -241,21 +241,21 @@ const LandingPage: React.FC = () => {
                             <div className="w-20 h-20 rounded-3xl bg-dark-secondary border border-dark-border-primary flex items-center justify-center mx-auto text-dark-accent-indigo mb-8 shadow-2xl">
                                 <Lock size={32} />
                             </div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-dark-accent-indigo">Security Protocol</p>
-                            <h2 className="text-4xl md:text-6xl font-black text-white leading-tight uppercase tracking-tight">Enterprise <span className="text-dark-text-muted italic">Integrity.</span></h2>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-dark-accent-indigo">Security First</p>
+                            <h2 className="text-4xl md:text-6xl font-black text-white leading-tight uppercase tracking-tight">Enterprise <span className="text-dark-text-muted italic">Security.</span></h2>
                             <p className="text-lg md:text-xl text-dark-text-secondary font-medium leading-relaxed max-w-2xl mx-auto italic">
-                                "The standard for institutions that prioritize evaluation security over aesthetic fluff."
+                                "Built for institutions that prioritize exam security and data integrity."
                             </p>
                         </div>
                         
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             {!isAuthenticated ? (
                                 <button onClick={() => navigate('/register')} className="bg-white text-dark-primary px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-dark-accent-indigo hover:text-white transition-all shadow-2xl active:scale-95">
-                                    Secure Registration
+                                    Create Account
                                 </button>
                             ) : (
                                 <button onClick={() => navigate(getPortalRoute())} className="bg-white text-dark-primary px-10 py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-dark-accent-indigo hover:text-white transition-all shadow-2xl active:scale-95">
-                                    Return to Secure Terminal
+                                    Go to Dashboard
                                 </button>
                             )}
                         </div>
@@ -268,7 +268,7 @@ const LandingPage: React.FC = () => {
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
                     <div className="flex flex-col items-center md:items-start gap-3">
                         <Logo size={28} />
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted italic">Unified Evaluation System</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted italic">Exam Management Platform</p>
                     </div>
                     
                     <div className="flex items-center gap-12">
@@ -276,17 +276,17 @@ const LandingPage: React.FC = () => {
                              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted mb-2">Platform Status</p>
                              <div className="flex items-center gap-2 justify-end">
                                 <div className="w-1.5 h-1.5 rounded-full bg-dark-accent-emerald animate-pulse" />
-                                <p className="text-[10px] font-black uppercase tracking-widest text-white">Nominal</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-white">Operational</p>
                              </div>
                         </div>
                         <div className="text-right">
-                             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted mb-2">Build Identifier</p>
-                             <p className="text-[10px] font-black uppercase tracking-widest text-white">AXIS_v2.0.4-RELEASE</p>
+                             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dark-text-muted mb-2">Version</p>
+                             <p className="text-[10px] font-black uppercase tracking-widest text-white">v2.0.4</p>
                         </div>
                     </div>
                 </div>
                 <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-dark-border-primary/50 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted">© {new Date().getFullYear()} Academix. Licensed Infrastructure.</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted">© {new Date().getFullYear()} Academix. All rights reserved.</p>
                     <div className="flex items-center gap-8">
                         {['Privacy', 'Legal', 'Security', 'Compliance'].map(item => (
                             <a key={item} href="#" className="text-[10px] font-black uppercase tracking-widest text-dark-text-muted hover:text-white transition-colors">

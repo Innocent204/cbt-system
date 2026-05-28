@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { User, CreateUserData, UpdateUserData } from '../../types';
-import userService from '../../services/userService';
-import { toast } from 'react-toastify';
+import { User as UserIcon, Mail, Shield, Key, CheckCircle } from 'lucide-react';
 
 interface UserFormProps {
-    user?: User | null;
-    onSubmit: () => void;
-    onCancel: () => void;
+    initialData?: User;
+    onSubmit: (data: CreateUserData | UpdateUserData) => Promise<void>;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
-    const [formData, setFormData] = useState<CreateUserData | UpdateUserData>({
+const UserForm: React.FC<UserFormProps> = ({ initialData, onSubmit }) => {
+    const [formData, setFormData] = useState<any>({
         username: '',
         email: '',
         first_name: '',
@@ -22,22 +20,22 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (user) {
+        if (initialData) {
             setFormData({
-                username: user.username,
-                email: user.email,
-                first_name: user.first_name,
-                last_name: user.last_name,
-                role: user.role,
-                password: '', // Don't pre-fill password for edits
-                is_active: user.is_active
+                username: initialData.username || '',
+                email: initialData.email || '',
+                first_name: initialData.first_name || '',
+                last_name: initialData.last_name || '',
+                role: initialData.role || 'student',
+                password: '',
+                is_active: initialData.is_active ?? true
             });
         }
-    }, [user]);
+    }, [initialData]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
-        setFormData(prev => ({
+        setFormData((prev: any) => ({
             ...prev,
             [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
         }));
@@ -46,148 +44,154 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-
         try {
-            if (user) {
-                // Update existing user
-                const updateData: UpdateUserData = {
-                    ...formData,
-                    password: formData.password || undefined // Only send password if provided
-                };
-                await userService.updateUser(user.id, updateData);
-                toast.success('User updated successfully');
-            } else {
-                // Create new user
-                await userService.createUser(formData as CreateUserData);
-                toast.success('User created successfully');
-            }
-            onSubmit();
-        } catch (error: any) {
-            toast.error(error.response?.data?.detail || 'Failed to save user');
+            await onSubmit(formData);
         } finally {
             setLoading(false);
         }
     };
 
+    const inputClasses = "w-full pl-12 pr-4 py-4 bg-dark-tertiary/50 border border-dark-border-primary rounded-xl focus:ring-1 focus:ring-dark-accent-indigo outline-none text-sm text-white placeholder:text-dark-text-muted transition-all";
+    const labelClasses = "text-[10px] font-black uppercase tracking-widest text-dark-text-muted mb-2 block ml-1";
+
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        First Name
-                    </label>
+        <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                    <label className={labelClasses}>First Name</label>
+                    <div className="relative group">
+                        <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-text-muted group-focus-within:text-dark-accent-indigo transition-colors" size={18} />
+                        <input
+                            type="text"
+                            name="first_name"
+                            value={formData.first_name}
+                            onChange={handleChange}
+                            placeholder="John"
+                            className={inputClasses}
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <label className={labelClasses}>Last Name</label>
+                    <div className="relative group">
+                        <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-text-muted group-focus-within:text-dark-accent-indigo transition-colors" size={18} />
+                        <input
+                            type="text"
+                            name="last_name"
+                            value={formData.last_name}
+                            onChange={handleChange}
+                            placeholder="Doe"
+                            className={inputClasses}
+                            required
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-2">
+                <label className={labelClasses}>Username</label>
+                <div className="relative group">
+                    <Shield className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-text-muted group-focus-within:text-dark-accent-indigo transition-colors" size={18} />
                     <input
                         type="text"
-                        name="first_name"
-                        value={formData.first_name}
+                        name="username"
+                        value={formData.username}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="john_doe"
+                        className={inputClasses}
                         required
                     />
                 </div>
+            </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Last Name
-                    </label>
+            <div className="space-y-2">
+                <label className={labelClasses}>Email Address</label>
+                <div className="relative group">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-text-muted group-focus-within:text-dark-accent-indigo transition-colors" size={18} />
                     <input
-                        type="text"
-                        name="last_name"
-                        value={formData.last_name}
+                        type="email"
+                        name="email"
+                        value={formData.email}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="john@example.com"
+                        className={inputClasses}
                         required
                     />
                 </div>
             </div>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Username
-                </label>
-                <input
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                    <label className={labelClasses}>Role</label>
+                    <div className="relative group">
+                        <Shield className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-text-muted group-focus-within:text-dark-accent-indigo transition-colors" size={18} />
+                        <select
+                            name="role"
+                            value={formData.role}
+                            onChange={handleChange}
+                            className={`${inputClasses} appearance-none cursor-pointer`}
+                            required
+                        >
+                            <option value="student">Student</option>
+                            <option value="examiner">Examiner</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <label className={labelClasses}>Password</label>
+                    <div className="relative group">
+                        <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-text-muted group-focus-within:text-dark-accent-indigo transition-colors" size={18} />
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder={initialData ? "Leave blank to keep current" : "Min 8 characters"}
+                            className={inputClasses}
+                            required={!initialData}
+                        />
+                    </div>
+                </div>
             </div>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                </label>
-                <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                />
-            </div>
-
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Role
-                </label>
-                <select
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                >
-                    <option value="student">Student</option>
-                    <option value="examiner">Examiner</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Password {user && '(leave blank to keep current)'}
-                </label>
-                <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder={user ? 'Enter new password (optional)' : 'Enter password'}
-                    required={!user}
-                />
-            </div>
-
-            <div className="flex items-center">
-                <input
-                    type="checkbox"
-                    name="is_active"
-                    checked={formData.is_active}
-                    onChange={handleChange}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label className="ml-2 block text-sm text-gray-700">
-                    Active
+            <div className="flex items-center gap-6 p-4 bg-dark-tertiary/20 rounded-2xl border border-dark-border-primary/50">
+                <label className="flex items-center cursor-pointer group">
+                    <div className="relative">
+                        <input
+                            type="checkbox"
+                            name="is_active"
+                            checked={formData.is_active}
+                            onChange={handleChange}
+                            className="sr-only"
+                        />
+                        <div className={`w-12 h-6 rounded-full transition-colors ${formData.is_active ? 'bg-dark-accent-emerald' : 'bg-dark-tertiary'}`}>
+                            <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${formData.is_active ? 'translate-x-6' : ''}`} />
+                        </div>
+                    </div>
+                    <span className="ml-4 text-[10px] font-black uppercase tracking-widest text-white group-hover:text-dark-accent-emerald transition-colors">
+                        Account Status: {formData.is_active ? 'Active' : 'Inactive'}
+                    </span>
                 </label>
             </div>
 
-            <div className="flex justify-end space-x-3 pt-4">
-                <button
-                    type="button"
-                    onClick={onCancel}
-                    className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
-                >
-                    Cancel
-                </button>
+            <div className="flex gap-4 pt-6">
                 <button
                     type="submit"
                     disabled={loading}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                    className="flex-1 bg-dark-accent-indigo text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                 >
-                    {loading ? 'Saving...' : (user ? 'Update' : 'Create')}
+                    {loading ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : initialData ? (
+                        <CheckCircle size={18} />
+                    ) : (
+                        <Shield size={18} />
+                    )}
+                    <span>{initialData ? 'Save Changes' : 'Create User'}</span>
                 </button>
             </div>
         </form>

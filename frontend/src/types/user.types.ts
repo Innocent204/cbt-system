@@ -58,12 +58,16 @@ export interface CreateUserData {
   password: string;
   password_confirm: string;
   phone?: string;
+  is_active?: boolean;
 }
 
 export interface UpdateUserData {
+  username?: string;
   email?: string;
   first_name?: string;
   last_name?: string;
+  role?: UserRole;
+  password?: string;
   phone?: string;
   is_active?: boolean;
 }

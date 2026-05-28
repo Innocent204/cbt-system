@@ -36,9 +36,9 @@ const ExaminerOverview: React.FC = () => {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-dark-secondary p-8 rounded-[2.5rem] border border-dark-border-primary ring-1 ring-white/5">
                 <div className="space-y-4">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-accent-indigo">Instructional Analytics</p>
-                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">Examiner <span className="text-dark-text-muted">Command</span></h1>
-                    <p className="text-lg text-dark-text-secondary font-medium max-w-xl">Overview of exam systems and candidate performance pipelines.</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-dark-accent-indigo">Examiner Dashboard</p>
+                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">Your <span className="text-dark-text-muted">Overview</span></h1>
+                    <p className="text-lg text-dark-text-secondary font-medium max-w-xl">Manage your exams, questions, and track student performance.</p>
                 </div>
                 <div className="flex items-center gap-4 bg-dark-tertiary/50 p-2 rounded-2xl border border-dark-border-primary ring-1 ring-white/5">
                     <div className="px-5 py-3 rounded-xl bg-dark-secondary border border-dark-border-primary text-[10px] font-black uppercase tracking-widest text-dark-text-primary shadow-xl">System Clock</div>
@@ -49,10 +49,10 @@ const ExaminerOverview: React.FC = () => {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: 'Intelligence Bank', value: stats?.totalQuestions, sub: `+${stats?.questionsAddedToday} added`, icon: FileText, color: 'text-dark-accent-indigo' },
-                    { label: 'Active Deployment', value: stats?.activeExams, sub: `${stats?.examsPublishedToday} published`, icon: Calendar, color: 'text-dark-accent-emerald' },
-                    { label: 'Candidate Throughput', value: stats?.studentsTested, sub: `+${stats?.studentGrowth} growth`, icon: Users, color: 'text-dark-accent-cyan' },
-                    { label: 'Aggregate Score', value: `${stats?.averageScore}%`, sub: `+${stats?.scoreImprovement}% gain`, icon: TrendingUp, color: 'text-dark-accent-amber' },
+                    { label: 'Total Questions', value: stats?.totalQuestions, sub: `+${stats?.questionsAddedToday} today`, icon: FileText, color: 'text-dark-accent-indigo' },
+                    { label: 'Active Exams', value: stats?.activeExams, sub: `${stats?.examsPublishedToday} published`, icon: Calendar, color: 'text-dark-accent-emerald' },
+                    { label: 'Students Tested', value: stats?.studentsTested, sub: `+${stats?.studentGrowth} growth`, icon: Users, color: 'text-dark-accent-cyan' },
+                    { label: 'Average Score', value: `${stats?.averageScore}%`, sub: `+${stats?.scoreImprovement}% gain`, icon: TrendingUp, color: 'text-dark-accent-amber' },
                 ].map((stat, i) => (
                     <div key={i} className="bg-dark-secondary rounded-2xl p-6 border border-dark-border-primary hover:border-dark-text-muted transition-all duration-300">
                         <div className="flex items-start justify-between mb-4">
@@ -71,13 +71,13 @@ const ExaminerOverview: React.FC = () => {
             {/* Actions + Activity */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 bg-dark-secondary p-6 md:p-10 rounded-[2.5rem] border border-dark-border-primary ring-1 ring-white/5">
-                    <h3 className="text-xl font-black text-white mb-8 tracking-tight uppercase tracking-widest text-[10px] opacity-40">Operation Protocols</h3>
+                    <h3 className="text-xl font-black text-white mb-8 tracking-tight uppercase tracking-widest text-[10px] opacity-40">Quick Actions</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {[
-                            { label: 'Question Architect', desc: 'Manage conceptual logic', icon: FileText, path: '/examiner/questions', color: 'text-dark-accent-indigo' },
-                            { label: 'Exam Scheduler', desc: 'Initialize deployment', icon: Calendar, path: '/examiner/create-exam', color: 'text-dark-accent-emerald' },
-                            { label: 'Evaluation Matrix', desc: 'Analyze results data', icon: BarChart3, path: '/examiner/results', color: 'text-dark-accent-cyan' },
-                            { label: 'Deployment Logs', desc: 'Execution history', icon: Clock, path: '/examiner/results', color: 'text-dark-text-muted' },
+                            { label: 'Question Bank', desc: 'Manage your questions', icon: FileText, path: '/examiner/questions', color: 'text-dark-accent-indigo' },
+                            { label: 'Exam Scheduler', desc: 'Create & schedule exams', icon: Calendar, path: '/examiner/create-exam', color: 'text-dark-accent-emerald' },
+                            { label: 'Results', desc: 'View exam results', icon: BarChart3, path: '/examiner/results', color: 'text-dark-accent-cyan' },
+                            { label: 'History', desc: 'Recent activity', icon: Clock, path: '/examiner/results', color: 'text-dark-text-muted' },
                         ].map((action, i) => (
                             <button
                                 key={i}
@@ -95,7 +95,7 @@ const ExaminerOverview: React.FC = () => {
                 </div>
 
                 <div className="bg-dark-secondary p-6 md:p-10 rounded-[2.5rem] border border-dark-border-primary ring-1 ring-white/5 flex flex-col">
-                    <h3 className="text-xl font-black text-white mb-8 tracking-tight uppercase tracking-widest text-[10px] opacity-40">Intelligence Feed</h3>
+                    <h3 className="text-xl font-black text-white mb-8 tracking-tight uppercase tracking-widest text-[10px] opacity-40">Recent Activity</h3>
                     <div className="space-y-6 flex-1">
                         {recentActivity.map((activity: any, idx: number) => (
                             <div key={idx} className="flex items-center gap-5 group cursor-pointer">

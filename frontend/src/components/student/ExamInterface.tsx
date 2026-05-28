@@ -300,7 +300,7 @@ const ExamInterface: React.FC = () => {
                                     const unansweredCount = examData.questions.length - Object.keys(answers).length;
                                     const message = unansweredCount > 0
                                         ? `Warning: You have ${unansweredCount} unanswered questions.Submit anyway ? `
-                                        : 'Are you sure you want to finish and submit?';
+                                        : 'Are you sure you want to submit your exam?';
 
                                     toast(
                                         ({ closeToast }) => (
@@ -320,7 +320,7 @@ const ExamInterface: React.FC = () => {
                                                             handleSubmit();
                                                         }}
                                                     >
-                                                        Confirm Submission
+                                                        Submit Exam
                                                     </button>
                                                 </div>
                                             </div>
@@ -332,7 +332,7 @@ const ExamInterface: React.FC = () => {
                                 className="h-14 md:h-16 px-10 md:px-16 rounded-3xl bg-indigo-600 hover:bg-indigo-500 shadow-xl shadow-indigo-600/20 flex items-center gap-3 font-black uppercase text-xs tracking-widest text-white transition-all scale-105 active:scale-95"
                             >
                                 <Send size={20} />
-                                {isSubmitting ? 'Syncing...' : 'Final Submission'}
+                                {isSubmitting ? 'Submitting...' : 'Submit Exam'}
                             </button>
                         ) : (
                             <button
@@ -419,7 +419,7 @@ const ExamInterface: React.FC = () => {
                                         onClick={handleSubmit}
                                         className="w-full py-5 rounded-2xl bg-indigo-600 font-black uppercase text-xs tracking-[0.2em] hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/10"
                                     >
-                                        Final Sync & Finish
+                                        Submit Exam
                                     </button>
                                 </div>
                             </div>

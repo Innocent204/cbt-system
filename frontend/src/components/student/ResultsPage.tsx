@@ -64,7 +64,7 @@ const ResultsPage: React.FC = () => {
     }, [resultId, navigate]);
 
     if (loading) {
-        return <LoadingScreen message="Processing Performance Data" transparent />;
+        return <LoadingScreen message="Loading your results..." transparent />;
     }
 
     if (!result) return null;
@@ -101,7 +101,7 @@ const ResultsPage: React.FC = () => {
                         className="group flex items-center gap-2 text-slate-500 hover:text-indigo-600 transition-colors font-black uppercase text-[10px] tracking-widest"
                     >
                         <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                        Back to Vault
+                        Back to Results
                     </button>
                     <div className="flex gap-4">
                         <button className="h-10 px-6 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/10 transition-all">
@@ -118,7 +118,7 @@ const ResultsPage: React.FC = () => {
                             <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl font-black text-xs uppercase tracking-widest ${result.is_passed ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
                                 }`}>
                                 {result.is_passed ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
-                                {result.is_passed ? 'Operational Success' : 'Session Terminated'}
+                                {result.is_passed ? 'Passed' : 'Failed'}
                             </div>
                             <h1 className="text-4xl md:text-5xl font-black text-white leading-tight">
                                 {result.exam_title}
@@ -171,15 +171,15 @@ const ResultsPage: React.FC = () => {
                             <Award size={24} />
                         </div>
                         <div className="text-3xl font-black text-white mb-2">{result.score}/{result.total_marks}</div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Raw Performance</div>
+                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Your Score</div>
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 border border-white/5 bg-white/[0.02]">
                         <div className="p-3 w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-6">
                             <Target size={24} />
                         </div>
-                        <div className="text-3xl font-black text-white mb-2">{result.is_passed ? 'Qualifying' : 'Deficient'}</div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Threshold Status</div>
+                        <div className="text-3xl font-black text-white mb-2">{result.is_passed ? 'Passed' : 'Failed'}</div>
+                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Result</div>
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 border border-white/5 bg-white/[0.02]">
@@ -187,7 +187,7 @@ const ResultsPage: React.FC = () => {
                             <Clock size={24} />
                         </div>
                         <div className="text-3xl font-black text-white mb-2">{result.duration_minutes}m</div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Time Expenditure</div>
+                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Duration</div>
                     </motion.div>
                 </div>
 
@@ -198,16 +198,16 @@ const ResultsPage: React.FC = () => {
                             <TrendingUp size={24} />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-white tracking-tight">Post-Session Diagnosis</h2>
-                            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Cross-evaluation insights</p>
+                            <h2 className="text-2xl font-black text-white tracking-tight">Performance Analysis</h2>
+                            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Your exam performance breakdown</p>
                         </div>
                     </div>
 
                     <div className="space-y-8">
                         <div className="p-8 rounded-[2rem] bg-indigo-600/5 border border-indigo-500/10">
                             <div className="flex items-center justify-between mb-4">
-                                <div className="text-indigo-400 font-black uppercase text-[10px] tracking-widest">Mastery Level</div>
-                                <div className="text-white font-black">{result.percentage > 80 ? 'Exceptional' : result.percentage > 60 ? 'Competent' : 'Developing'}</div>
+                                <div className="text-indigo-400 font-black uppercase text-[10px] tracking-widest">Performance</div>
+                                <div className="text-white font-black">{result.percentage > 80 ? 'Excellent' : result.percentage > 60 ? 'Good' : 'Keep Learning'}</div>
                             </div>
                             <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
                                 <motion.div
@@ -221,20 +221,20 @@ const ResultsPage: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="flex gap-6 p-6 rounded-3xl bg-white/[0.02] border border-white/5">
                                 <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0">
-                                    <Zap size={24} />
+                                    <CheckCircle2 size={24} />
                                 </div>
                                 <div className="space-y-2">
-                                    <h4 className="text-white font-black text-lg">Velocity</h4>
-                                    <p className="text-slate-500 text-sm font-medium leading-relaxed">Your response rate was higher than the average candidate in this category.</p>
+                                    <h4 className="text-white font-black text-lg">Correct Answers</h4>
+                                    <p className="text-slate-500 text-sm font-medium leading-relaxed">You scored {result.score} out of {result.total_marks} marks.</p>
                                 </div>
                             </div>
                             <div className="flex gap-6 p-6 rounded-3xl bg-white/[0.02] border border-white/5">
                                 <div className="h-14 w-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
-                                    <BookOpen size={24} />
+                                    <Target size={24} />
                                 </div>
                                 <div className="space-y-2">
-                                    <h4 className="text-white font-black text-lg">Retention</h4>
-                                    <p className="text-slate-500 text-sm font-medium leading-relaxed">High accuracy in conceptual questions suggests a strong foundation in core modules.</p>
+                                    <h4 className="text-white font-black text-lg">Grade</h4>
+                                    <p className="text-slate-500 text-sm font-medium leading-relaxed">Your grade is {result.grade} ({result.percentage}% accuracy).</p>
                                 </div>
                             </div>
                         </div>
@@ -242,13 +242,13 @@ const ResultsPage: React.FC = () => {
 
                     <div className="mt-12 pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
                         <p className="text-slate-500 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                            <ShieldCheck size={14} className="text-emerald-500" /> Authorized Academic Transcript
+                            <ShieldCheck size={14} className="text-emerald-500" /> Verified Result
                         </p>
                         <button
                             onClick={() => navigate('/student')}
                             className="h-14 px-12 rounded-[2rem] bg-indigo-600 hover:bg-indigo-500 text-white font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-indigo-600/20 transition-all flex items-center gap-3"
                         >
-                            Return to Command Center <RotateCcw size={18} />
+                            Back to Dashboard <RotateCcw size={18} />
                         </button>
                     </div>
                 </motion.div>
